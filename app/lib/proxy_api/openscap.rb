@@ -39,11 +39,11 @@ module ::ProxyAPI
 
     def destroy_report(report, cname)
       begin
-        parse(delete("arf/#{report.id}/#{cname}/#{report.reported_at.to_i}/#{report.policy_arf_report.digest}"))
+        result = parse(delete("arf/#{report.id}/#{cname}/#{report.reported_at.to_i}/#{report.policy_arf_report.digest}"))
+        raise ::Foreman::Exception.new(N_("Failed to parse the response from Smart Proxy at %{url} when deleting ARF report"), { :url => url }) unless result
+        result
       rescue => e
-        logger.error "Failed to destroy arf report with id #{report.id} on Smart Proxy"
-        logger.debug e.backtrace.join("\n\t")
-        false
+        raise ::ProxyAPI::ProxyException.new(url, e, N_("Failed to delete ARF report with id %{id} on Smart Proxy %{url}"), { :id => report.id, :url => url})
       end
     end
   end

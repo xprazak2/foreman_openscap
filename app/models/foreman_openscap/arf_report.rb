@@ -164,11 +164,8 @@ module ForemanOpenscap
     end
 
     def destroy
-      if openscap_proxy_api.destroy_report(self, ForemanOpenscap::Helper::find_name_or_uuid_by_host(host))
-        super
-      else
-        false
-      end
+      super
+      openscap_proxy_api.destroy_report(self, ForemanOpenscap::Helper::find_name_or_uuid_by_host(host))
     end
 
     def self.newline_to_space(string)

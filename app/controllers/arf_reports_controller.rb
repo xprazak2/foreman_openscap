@@ -39,10 +39,15 @@ class ArfReportsController < ApplicationController
   end
 
   def destroy
-    if @arf_report.destroy
-      process_success(:success_msg => (_("Successfully deleted ARF report.")), :success_redirect => arf_reports_path)
-    else
-      process_error(:error_msg => _("Failed to delete ARF Report for host %{host_name} reported at %{reported_at}") % {:host_name => @arf_report.host.name, :reported_at => @arf_report.reported_at})
+    begin
+      if @arf_report.destroy
+        process_success(:success_msg => (_("Successfully deleted ARF report.")), :success_redirect => arf_reports_path)
+      else
+        process_error(:error_msg => _("Failed to delete ARF Report for host %{host_name} reported at %{reported_at}") % {:host_name => @arf_report.host.name, :reported_at => @arf_report.reported_at})
+      end
+    rescue ::ProxyAPI::ProxyException, ::Foreman::Exception => e
+      warning e.to_s
+      redirect_to arf_reports_path
     end
   end
 

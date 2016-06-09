@@ -54,6 +54,8 @@ module Api
 
         def destroy
           process_response @arf_report.destroy
+        rescue ::ProxyAPI::Exception, ::Foreman::Exception
+          process_success
         end
 
         api :POST, "/compliance/arf/:cname/:policy_id/:date", N_("Upload an ARF report")
