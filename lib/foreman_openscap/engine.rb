@@ -112,6 +112,8 @@ module ForemanOpenscap
                                     :create_policies, :create_scap_contents, :destroy_policies, :destroy_scap_contents,
                                     :create_tailoring_files, :view_tailoring_files, :edit_tailoring_files, :destroy_tailoring_files]
         role "Create ARF report", [:create_arf_reports] # special as only Proxy can create
+        add_permissions_to_core_roles ['ForemanOpenscap::ArfReport', 'ForemanOpenscap::Policy',
+                                       'ForemanOpenscap::ScapContent', 'ForemanOpenscap::TailoringFile'], :except => [:create_arf_reports]
 
         #add menu entries
         divider :top_menu, :caption => N_('Compliance'), :parent => :hosts_menu
