@@ -10,7 +10,9 @@
       <div class="stats-well">
         <h4 class="header ca"><%= _('%s latest report') % policy.name %></h4>
         <% report = data.report %>
-        <%= host_policy_breakdown_chart(report, :class => 'statistics-pie small') %>
+
+        <div id="policy_breakdown_chart"></div>
+        <%= mount_react_component('OpenscapPieChart', '#policy_breakdown_chart', report.to_json) %>
       </div>
     </div>
 

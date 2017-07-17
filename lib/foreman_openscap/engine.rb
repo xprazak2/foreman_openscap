@@ -120,6 +120,8 @@ create_tailoring_files view_tailoring_files edit_tailoring_files destroy_tailori
 view_openscap_proxies]
         role "Create ARF report", [:create_arf_reports] # special as only Proxy can create
 
+        role "Scap test", []#[:view_policies, :create_policies, :edit_policies]
+
         add_all_permissions_to_default_roles
 
         #add menu entries
