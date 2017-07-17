@@ -1,4 +1,6 @@
 <% javascript 'charts', 'dashboard', 'foreman_openscap/scap_hosts_show' %>
+<% stylesheet 'foreman_openscap/policy' %>
+<%= webpacked_plugins_js_for :foreman_openscap %>
 
 <% title n_("%s compliance report by policy", "%s compliance reports by policy" , @host.combined_policies.length) % @host.to_label %>
 <% @host.combined_policies.each do |policy| %>
@@ -10,7 +12,9 @@
       <div class="stats-well">
         <h4 class="header ca"><%= _('%s latest report') % policy.name %></h4>
         <% report = data.report %>
-        <%= host_policy_breakdown_chart(report, :class => 'statistics-pie small') %>
+        <% div_id = "policy_breakdown_chart_#{policy.id}"%>
+        <div id="<%= div_id %>" class="policy_breakdown_chart" ></div>
+        <%= mount_react_component('OpenscapPieChart', "##{div_id}", report.to_json) %>
       </div>
     </div>
 
