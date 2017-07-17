@@ -42,3 +42,9 @@
     </tr>
   <% end %>
 </table>
+
+<%= webpacked_plugins_js_for :foreman_openscap %>
+
+<span id="policy-count"></span>
+<%# binding.pry %>
+<%= mount_react_component('Policies', '#policy-count', { :url => api_compliance_policies_path }.to_json) %>

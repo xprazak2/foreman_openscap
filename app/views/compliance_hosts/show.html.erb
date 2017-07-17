@@ -21,7 +21,9 @@
                                                         hash_for_arf_report_path(:id => data.latest_report.id)
                                                           .merge(:auth_object => data.latest_report)) %></h4>
         <% report = data.report %>
-        <%= host_policy_breakdown_chart(report, :class => 'statistics-pie small') %>
+
+        <div id="policy_breakdown_chart"></div>
+        <%= mount_react_component('OpenscapPieChart', '#policy_breakdown_chart', report.to_json) %>
       </div>
     </div>
 
