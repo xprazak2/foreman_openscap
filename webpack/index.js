@@ -1,8 +1,13 @@
-import componentRegistry from 'foremanReactCommon/componentRegistry';
+import componentRegistry from 'foremanPlugins/componentRegistry';
 import OpenscapPieChart from './OpenscapPieChart';
-let Blueberry = "Blueberry"
+import reducerRegistry from 'foremanPlugins/reducerRegistry';
+import rootReducer from './reducers';
 
 // componentRegistry.register('OpenscapPieChart', { type: OpenscapPieChart, store: true, data: true });
 componentRegistry.registerMultiple({'OpenscapPieChart': { type: OpenscapPieChart, store: true, data: true },
                                      'Blueberry': { type: Blueberry, store: false, data: false }
                                    });
+
+
+
+

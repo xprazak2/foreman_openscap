@@ -1,7 +1,7 @@
 import React from 'foremanNodeModules/react';
 
-import PieChart from 'foremanReact/common/charts/PieChart';
-import { navigateToSearch } from 'foremanReactService/ChartService';
+// import PieChart from 'foremanReact/common/charts/PieChart';
+// import { navigateToSearch } from 'foremanReactService/ChartService';
 
 class OpenscapPieChart extends React.Component {
     render() {
