@@ -13,12 +13,10 @@ export default (state = initialState, action) => {
 
   switch (action.type) {
     case POLICIES_REQUEST:
-      return state.set(
-        payload
-      );
     case POLICIES_SUCCESS:
       return state.set(
-        payload
+        'list',
+        payload.results
       );
     case POLICIES_FAILURE:
       return state.set(
