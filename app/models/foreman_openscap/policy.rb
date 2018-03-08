@@ -36,6 +36,16 @@ module ForemanOpenscap
     after_save :assign_policy_to_hostgroups
     # before_destroy - ensure that the policy has no hostgroups, or classes
 
+    scoped_search :on => :cron_line_split, :complete_value => { :true => true, :false => false }, :operators => ['= '], :ext_method => :search_by_weekday, :rename => :weekend
+
+    def self.search_by_weekday(key, operator, value)
+      weekdays = %w(monday tuesday wednesday thursday friday)
+      weekends = %(saturday sunday)
+      { :conditions => Policy.arel_table[:id].in(
+          Policy.where(:weekday => weekends)).to_sql
+      }
+    end
+
     default_scope do
       with_taxonomy_scope do
         order("foreman_openscap_policies.name")
