@@ -54,6 +54,10 @@ Rails.application.routes.draw do
     end
 
     resources :hosts, :only => [:show], :as => :compliance_hosts, :controller => :compliance_hosts
+
+    resources :xccdf_rules, :only => [:index]
+
+    match '/xccdf_rules/*page' => 'xccdf_rules#index', :via => [:get]
   end
 
   namespace :api, :defaults => { :format => 'json' } do

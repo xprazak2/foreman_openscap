@@ -141,6 +141,11 @@ module ForemanOpenscap
         menu :top_menu, :compliance_files, :caption => N_('Tailoring Files'),
                                            :url_hash => { :controller => :tailoring_files, :action => :index },
                                            :parent => :hosts_menu
+        menu :top_menu, :compliance_rules, :caption => N_('XCCDF Rules'),
+                                           :url_hash => { :controller => :xccdf_rules, :action => :index },
+                                           :parent => :hosts_menu,
+                                           :turbolinks => false
+
 
         # add dashboard widget
         widget 'compliance_host_reports_widget',
