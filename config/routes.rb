@@ -56,8 +56,14 @@ Rails.application.routes.draw do
     resources :hosts, :only => [:show], :as => :compliance_hosts, :controller => :compliance_hosts
 
     resources :xccdf_rules, :only => [:index]
+    resources :scap_content_profiles, :only => [:index] do
+      collection do
+        get 'list'
+      end
+    end
 
     match '/xccdf_rules/*page' => 'xccdf_rules#index', :via => [:get]
+    match '/scap_content_profiles/*page' => 'scap_content_profiles#index', :via => [:get]
   end
 
   namespace :api do
