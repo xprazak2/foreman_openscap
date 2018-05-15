@@ -1,0 +1,8 @@
+<%= webpacked_plugins_js_for :foreman_openscap %>
+
+<div id="scap-content-profiles">
+
+
+<%= mount_react_component('ScapContentProfiles',
+                          '#scap-content-profiles',
+                          { :res => @res, :scapContentProfilesUrl => list_scap_content_profiles_path }.to_json )%>

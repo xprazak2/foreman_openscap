@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/theforeman/foreman_openscap/issues"
   },
-  "homepage": "https://github.com/theforeman/foreman_openscap.git"
+  "homepage": "https://github.com/theforeman/foreman_openscap.git",
+  "dependencies": {
+    "react-router-dom": "^4.2.2"
+  }
 }

@@ -132,7 +132,7 @@ module ForemanOpenscap
         menu :top_menu, :compliance_policies, :caption => N_('Policies'),
                                               :url_hash => { :controller => :policies, :action => :index },
                                               :parent => :hosts_menu
-        menu :top_menu, :compliance_contents, :caption => N_('SCAP contents'),
+        menu :top_menu, :compliance_contents, :caption => N_('SCAP Contents'),
                                               :url_hash => { :controller => :scap_contents, :action => :index },
                                               :parent => :hosts_menu
         menu :top_menu, :compliance_reports, :caption => N_('Reports'),
@@ -145,6 +145,12 @@ module ForemanOpenscap
                                            :url_hash => { :controller => :xccdf_rules, :action => :index },
                                            :parent => :hosts_menu,
                                            :turbolinks => false
+        menu :top_menu, :compliance_content_profiles, :caption => N_('SCAP Content Profiles'),
+                                                      :url_hash => { :controller => :scap_content_profiles, :action => :index },
+                                                      :parent => :hosts_menu,
+                                                      :turbolinks => false
+
+
 
 
         # add dashboard widget
