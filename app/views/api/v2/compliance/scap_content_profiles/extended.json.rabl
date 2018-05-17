@@ -7,5 +7,5 @@ child :scap_content do
 end
 
 child :tailoring_file do
-  extends extends "api/v2/compliance/tailoring_files/main"
+  extends "api/v2/compliance/tailoring_files/main"
 end

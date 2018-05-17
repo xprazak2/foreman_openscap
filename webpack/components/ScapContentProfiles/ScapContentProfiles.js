@@ -14,7 +14,7 @@ class ScapContentProfiles extends React.Component {
   }
 
   render() {
-    return <div>I am xccdf rules!</div>;
+    return <div>I am xccdf profiles!</div>;
   }
 }
 
@@ -23,4 +23,3 @@ const mapStateToProps = ({ scapContentProfiles }, ownProps) => {
 }
 
 export default connect(mapStateToProps, ScapContentProfileActions)(ScapContentProfiles);
-// export default ScapContentProfiles;
