@@ -4,8 +4,8 @@ import openscapReducer from './reducers';
 import Policies from './components/policies';
 import XccdfRules from './components/XccdfRules';
 import ScapContentProfiles from './components/ScapContentProfiles';
-// import { injectReducer } from 'redux-injector';
-// import { registerReducer } from 'foremanReact/common/MountingService';
+import injectReducer from 'foremanReact/redux/reducers/registerReducer';
+
 
 console.log('hola')
 
@@ -15,6 +15,4 @@ componentRegistry.registerMultiple([{ name: 'OpenscapPieChart', type: OpenscapPi
                                     { name: 'ScapContentProfiles', type: ScapContentProfiles }
                                    ]);
 
-// injectReducer('hosts.content', openscapReducer);
-
-// injectReducer('hosts.content', openscapReducer);
+injectReducer('foreman_openscap', openscapReducer);

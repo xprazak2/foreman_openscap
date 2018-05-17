@@ -6,7 +6,7 @@ module Api::V2
       end
 
       def index
-        @scap_content_profile = resource_scope_for_index(:permission => :view_scap_content_profiles)
+        @scap_content_profiles = resource_scope_for_index(:permission => :view_scap_content_profiles)
       end
     end
   end
