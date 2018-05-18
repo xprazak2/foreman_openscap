@@ -11,7 +11,6 @@ const scapContentProfiles = (state = {}, action) => {
     case SCAP_CONTENT_PROFILES_REQUEST:
       return { ...state, ...{ loading: true } };
     case SCAP_CONTENT_PROFILES_SUCCESS:
-      console.log(payload)
       return { ...state, ...{ loading: false, profiles: payload.results } };
     case SCAP_CONTENT_PROFILES_FAILURE:
       return { ...state, ...{ error: payload.error, loading: false } };
