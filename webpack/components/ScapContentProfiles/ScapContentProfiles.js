@@ -1,6 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Spinner } from 'patternfly-react';
+
 import * as ScapContentProfileActions from '../../actions/scapContentProfiles';
+
+import ScapContentProfilesList from './ScapContentProfilesList';
 
 class ScapContentProfiles extends React.Component {
   constructor(props) {
@@ -14,12 +18,20 @@ class ScapContentProfiles extends React.Component {
   }
 
   render() {
-    return <div>I am xccdf profiles!</div>;
+    console.log(this.props)
+    const { loading, profiles } = this.props;
+    return (
+      <Spinner loading={loading}>
+        <ScapContentProfilesList rows={profiles || []} />
+      </Spinner>
+    )
+
+    // return <div>Profiles!</div>
   }
 }
 
-const mapStateToProps = ({ scapContentProfiles }, ownProps) => {
-  return scapContentProfiles || {};
+const mapStateToProps = ({ foreman_openscap: { scapContentProfiles } }, ownProps) => {
+  return scapContentProfiles;
 }
 
 export default connect(mapStateToProps, ScapContentProfileActions)(ScapContentProfiles);

@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/theforeman/foreman_openscap.git",
   "dependencies": {
-    "react-router-dom": "^4.2.2"
+    "react-router-dom": "^4.2.2",
+    "recompose": "^0.27.0",
+    "sortabular": "^1.5.1",
+    "table-resolver": "^4.0.1"
   }
 }
