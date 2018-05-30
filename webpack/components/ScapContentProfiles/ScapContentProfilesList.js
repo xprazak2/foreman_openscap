@@ -1,6 +1,6 @@
 import React from 'react';
 
-import * as sort from 'sortabular';
+import * as sort from 'foremanReact/sortabular/src';
 import * as resolve from 'table-resolver';
 import { compose } from 'recompose';
 import { orderBy } from 'lodash';
@@ -106,13 +106,16 @@ class ScapContentProfilesList extends React.Component {
     //     strategy: sort.strategies.byProperty
     //   })
     // )(rows);
-    debugger;
+    // debugger;
     const sortedRows = sort.sorter({
-      columns,
+      columns: [columns[0]],
       sortingColumns,
       sort: orderBy,
       strategy: sort.strategies.byProperty
-    })(rows);
+    })//(rows);
+    debugger;
+    sortedRows(rows)
+    // debugger;
 
 
     // return (
