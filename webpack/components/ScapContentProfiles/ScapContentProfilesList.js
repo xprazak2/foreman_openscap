@@ -5,7 +5,16 @@ import * as resolve from 'table-resolver';
 import { compose } from 'recompose';
 import { orderBy } from 'lodash';
 
+import { customHeaderFormattersDefinition } from 'foremanReact/patternfly-react/packages/core/src';
+// import { customHeaderFormattersDefinition } from 'patternfly-react';
+import { sortableHeaderCellFormatter } from 'patternfly-react';
 import { Table as PfTable } from 'patternfly-react';
+
+
+
+// import { customHeaderFormattersDefinition,
+//          sortableHeaderCellFormatter,
+//          Table as PfTable } from 'patternfly-react';
 
 const headerFormat = value => <PfTable.Heading>{value}</PfTable.Heading>;
 const cellFormat = value => <PfTable.Cell>{value}</PfTable.Cell>;
@@ -49,8 +58,15 @@ class ScapContentProfilesList extends React.Component {
       {
         header: {
           label: 'Profile ID',
+          props: {
+            index: 0,
+            rowSpan: 1,
+            colSpan: 1,
+            sort: true
+          },
           transforms: [sortableTransform],
-          formatters: [sortingFormatter]
+          formatters: [sortingFormatter],
+          customFormatters: [sortableHeaderCellFormatter]
         },
         cell: {
           formatters: [cellFormat]
@@ -60,6 +76,9 @@ class ScapContentProfilesList extends React.Component {
       {
         header: {
           label: 'Title',
+          props: {
+            index: 1
+          },
           formatters: [headerFormat]
         },
         cell: {
@@ -70,6 +89,9 @@ class ScapContentProfilesList extends React.Component {
       {
         header: {
           label: 'ID',
+          props: {
+            index: 2
+          },
           formatters: [headerFormat]
         },
         cell: {
@@ -90,7 +112,11 @@ class ScapContentProfilesList extends React.Component {
       columns: cols,
       rows: this.props.rows
     }
+
+    // enables our custom header formatters extensions to reactabular
+    this.customHeaderFormatters = customHeaderFormattersDefinition;
   }
+
 
   render() {
     const {rows, sortingColumns, columns } = this.state;
@@ -108,24 +134,34 @@ class ScapContentProfilesList extends React.Component {
     // )(rows);
     // debugger;
     const sortedRows = sort.sorter({
-      columns: [columns[0]],
+      columns: columns,
       sortingColumns,
       sort: orderBy,
       strategy: sort.strategies.byProperty
-    })//(rows);
-    debugger;
-    sortedRows(rows)
-    // debugger;
+    })(rows);
 
+    return (
+      <PfTable.PfProvider striped
+                          bordered
+                          hover
+                          dataTable
+                          columns={columns}
+                          components={{
+                            header: {
+                              cell: cellProps =>
+                                this.customHeaderFormatters({
+                                  cellProps,
+                                  columns,
+                                  sortingColumns
+                                })
+                            }
+                          }}>
+        <PfTable.Header headerRows={resolve.headerRows({ columns })}/>
+        <PfTable.Body rows={sortedRows} rowKey={'id'} />
+      </PfTable.PfProvider>
+    )
 
-    // return (
-    //   <PfTable.PfProvider striped bordered hover columns={columns}>
-    //     <PfTable.Header headerRows={resolve.headerRows({ columns })}/>
-    //     <PfTable.Body rows={sortedRows} rowKey={'id'} />
-    //   </PfTable.PfProvider>
-    // )
-
-    return <div>Profies</div>
+    // return <div>Profies</div>
   }
 }
 
