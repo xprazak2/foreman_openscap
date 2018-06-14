@@ -146,6 +146,7 @@ class ScapContentProfilesList extends React.Component {
                           hover
                           dataTable
                           columns={columns}
+                          className="openscap-patternfly"
                           components={{
                             header: {
                               cell: cellProps =>

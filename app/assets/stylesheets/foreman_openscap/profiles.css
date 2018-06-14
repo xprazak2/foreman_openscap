@@ -1,0 +1,13 @@
+table.dataTable.openscap-patternfly thead th.sort.sorting:after,
+table.dataTable.openscap-patternfly thead th.sort.sorting_asc:after,
+table.dataTable.openscap-patternfly thead th.sort.sorting_desc:after,
+table.dataTable.openscap-patternfly thead th.sort.sorting_asc_disabled:after,
+table.dataTable.openscap-patternfly thead th.sort.sorting_desc_disabled:after {
+  display: unset;
+  background-color: red;
+}
+
+
+table.dataTable.openscap-patternfly {
+  background-color: red;
+}
