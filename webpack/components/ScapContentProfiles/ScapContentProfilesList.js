@@ -1,24 +1,23 @@
 import React from 'react';
 
-import * as sort from 'foremanReact/sortabular/src';
+import * as sort from 'sortabular';
 import * as resolve from 'table-resolver';
 import { compose } from 'recompose';
 import { orderBy } from 'lodash';
 
-import { customHeaderFormattersDefinition } from 'foremanReact/patternfly-react/packages/core/src';
-// import { customHeaderFormattersDefinition } from 'patternfly-react';
+import { customHeaderFormattersDefinition } from 'patternfly-react';
 import { sortableHeaderCellFormatter } from 'patternfly-react';
 import { Table as PfTable } from 'patternfly-react';
-
-
-
-// import { customHeaderFormattersDefinition,
-//          sortableHeaderCellFormatter,
-//          Table as PfTable } from 'patternfly-react';
+import { urlBuilder } from '../../helper';
 
 const headerFormat = value => <PfTable.Heading>{value}</PfTable.Heading>;
 const cellFormat = value => <PfTable.Cell>{value}</PfTable.Cell>;
 
+const linkFormat = controller => id => value => <PfTable.Cell>
+  <a href={urlBuilder(`compliance/${controller}`, '', id)}>
+    { value }
+  </a>
+</PfTable.Cell>;
 
 const defaultSortingOrder = {
   FIRST: 'asc',
@@ -33,6 +32,21 @@ class ScapContentProfilesList extends React.Component {
     super(props)
 
     const getSortingColumns = () => this.state.sortingColumns || {};
+
+    const flattenRows = rows => {
+      return rows.map(row => {
+        const contentAttrs = row.scap_content ?
+          { scap_content_id: row.scap_content.id ,
+            scap_content_title: row.scap_content.title } :
+          { tailoring_file_id: row.tailoring_file.id ,
+            tailoring_file_name : row.tailoring_file.name }
+
+        return Object.assign({ id: row.id,
+                               title: row.title,
+                               profile_id: row.profile_id }, contentAttrs)
+      });
+    }
+
 
     const sortableTransform = sort.sort({
       getSortingColumns,
@@ -60,8 +74,6 @@ class ScapContentProfilesList extends React.Component {
           label: 'Profile ID',
           props: {
             index: 0,
-            rowSpan: 1,
-            colSpan: 1,
             sort: true
           },
           transforms: [sortableTransform],
@@ -77,9 +89,12 @@ class ScapContentProfilesList extends React.Component {
         header: {
           label: 'Title',
           props: {
-            index: 1
+            index: 1,
+            sort: true
           },
-          formatters: [headerFormat]
+          transforms: [sortableTransform],
+          formatters: [sortingFormatter],
+          customFormatters: [sortableHeaderCellFormatter]
         },
         cell: {
           formatters: [cellFormat]
@@ -88,16 +103,35 @@ class ScapContentProfilesList extends React.Component {
       },
       {
         header: {
-          label: 'ID',
+          label: 'Scap Content',
           props: {
-            index: 2
+            index: 2,
+            sort: true
           },
-          formatters: [headerFormat]
+          transforms: [sortableTransform],
+          formatters: [sortingFormatter],
+          customFormatters: [sortableHeaderCellFormatter]
         },
         cell: {
           formatters: [cellFormat]
         },
-        property: 'id'
+        property: 'scap_content_title'
+      },
+      {
+        header: {
+          label: 'Tailoring File',
+          props: {
+            index: 3,
+            sort: true
+          },
+          transforms: [sortableTransform],
+          formatters: [sortingFormatter],
+          customFormatters: [sortableHeaderCellFormatter]
+        },
+        cell: {
+          formatters: [cellFormat]
+        },
+        property: 'tailoring_file_name'
       }
     ];
 
@@ -110,7 +144,7 @@ class ScapContentProfilesList extends React.Component {
         }
       },
       columns: cols,
-      rows: this.props.rows
+      rows: flattenRows(this.props.rows)
     }
 
     // enables our custom header formatters extensions to reactabular
@@ -141,28 +175,31 @@ class ScapContentProfilesList extends React.Component {
     })(rows);
 
     return (
-      <PfTable.PfProvider striped
-                          bordered
-                          hover
-                          dataTable
-                          columns={columns}
-                          className="openscap-patternfly"
-                          components={{
-                            header: {
-                              cell: cellProps =>
-                                this.customHeaderFormatters({
-                                  cellProps,
-                                  columns,
-                                  sortingColumns
-                                })
-                            }
-                          }}>
-        <PfTable.Header headerRows={resolve.headerRows({ columns })}/>
-        <PfTable.Body rows={sortedRows} rowKey={'id'} />
-      </PfTable.PfProvider>
+      <div>
+        <div className="oscap-red">
+          Penenenee
+        </div>
+        <PfTable.PfProvider striped
+                            bordered
+                            hover
+                            dataTable
+                            columns={columns}
+                            className="openscap-patternfly"
+                            components={{
+                              header: {
+                                cell: cellProps =>
+                                  this.customHeaderFormatters({
+                                    cellProps,
+                                    columns,
+                                    sortingColumns
+                                  })
+                              }
+                            }}>
+          <PfTable.Header headerRows={resolve.headerRows({ columns })}/>
+          <PfTable.Body rows={sortedRows} rowKey={'id'} />
+        </PfTable.PfProvider>
+      </div>
     )
-
-    // return <div>Profies</div>
   }
 }
 

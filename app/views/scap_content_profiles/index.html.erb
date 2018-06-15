@@ -1,7 +1,12 @@
 <%= webpacked_plugins_js_for :foreman_openscap %>
 
-<div id="scap-content-profiles">
+<%# binding.pry %>
 
+<%# content_for(:stylesheets) do %>
+  <%= stylesheet_link_tag *webpack_asset_paths('foreman_openscap', :extension => 'css') %>
+<%# end %>
+
+<div id="scap-content-profiles"></div>
 
 <%= mount_react_component('ScapContentProfiles',
                           '#scap-content-profiles',

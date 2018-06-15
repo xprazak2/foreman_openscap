@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 
+import './overrides.scss';
 import ScapContentProfiles from './ScapContentProfiles';
 
 const links = [
