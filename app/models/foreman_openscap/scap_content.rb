@@ -20,6 +20,12 @@ module ForemanOpenscap
       end
     end
 
+    def ui_permissions
+      [:view_scap_contents, :create_scap_contents, :edit_scap_contents, :destroy_scap_contents].select do |perm|
+        respond_to?(:authorized?) && authorized?(perm)
+      end
+    end
+
     def used_location_ids
       Location.joins(:taxable_taxonomies).where(
         'taxable_taxonomies.taxable_type' => 'ForemanOpenscap::ScapContent',

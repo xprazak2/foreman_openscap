@@ -18,8 +18,8 @@ class ScapContentProfiles extends React.Component {
   }
 
   render() {
-    console.log(this.props)
     const { loading, profiles } = this.props;
+
     return (
       <Spinner loading={loading}>
         <ScapContentProfilesList rows={profiles || []} />

@@ -13,8 +13,6 @@ const links = [
 ];
 
 export default (data) => {
-  console.log('routes data')
-  console.log(data)
   return (
   <div>
     {links.map(({ path, Component }) => (

@@ -8,10 +8,17 @@ import { orderBy } from 'lodash';
 import { customHeaderFormattersDefinition } from 'patternfly-react';
 import { sortableHeaderCellFormatter } from 'patternfly-react';
 import { Table as PfTable } from 'patternfly-react';
-import { urlBuilder } from '../../helper';
+import { urlBuilder } from '../../helpers';
 
 const headerFormat = value => <PfTable.Heading>{value}</PfTable.Heading>;
 const cellFormat = value => <PfTable.Cell>{value}</PfTable.Cell>;
+
+const sourceFileFormat = (value, { rowData }) => {
+  return rowData.scap_content ?
+         linkFormat('scap_contents')(rowData.scap_content.id)(rowData.scap_content.title) :
+         linkFormat('tailoring_files')(rowData.tailoring_file.id)(rowData.tailoring_file.name)
+  // return (<PfTable.Cell>Placeholder</PfTable.Cell>);
+}
 
 const linkFormat = controller => id => value => <PfTable.Cell>
   <a href={urlBuilder(`compliance/${controller}`, '', id)}>
@@ -113,9 +120,9 @@ class ScapContentProfilesList extends React.Component {
           customFormatters: [sortableHeaderCellFormatter]
         },
         cell: {
-          formatters: [cellFormat]
+          formatters: [sourceFileFormat]
         },
-        property: 'scap_content_title'
+        property: 'scap_content'
       },
       {
         header: {
@@ -129,9 +136,9 @@ class ScapContentProfilesList extends React.Component {
           customFormatters: [sortableHeaderCellFormatter]
         },
         cell: {
-          formatters: [cellFormat]
+          formatters: [sourceFileFormat]
         },
-        property: 'tailoring_file_name'
+        property: 'tailoring_file'
       }
     ];
 
@@ -144,7 +151,7 @@ class ScapContentProfilesList extends React.Component {
         }
       },
       columns: cols,
-      rows: flattenRows(this.props.rows)
+      rows: this.props.rows
     }
 
     // enables our custom header formatters extensions to reactabular
@@ -176,9 +183,6 @@ class ScapContentProfilesList extends React.Component {
 
     return (
       <div>
-        <div className="oscap-red">
-          Penenenee
-        </div>
         <PfTable.PfProvider striped
                             bordered
                             hover
