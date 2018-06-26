@@ -4,6 +4,7 @@ import * as sort from 'sortabular';
 import * as resolve from 'table-resolver';
 import { compose } from 'recompose';
 import { orderBy } from 'lodash';
+import contains from 'ramda/src/contains';
 
 import { customHeaderFormattersDefinition } from 'patternfly-react';
 import { sortableHeaderCellFormatter } from 'patternfly-react';
@@ -13,18 +14,35 @@ import { urlBuilder } from '../../helpers';
 const headerFormat = value => <PfTable.Heading>{value}</PfTable.Heading>;
 const cellFormat = value => <PfTable.Cell>{value}</PfTable.Cell>;
 
-const sourceFileFormat = (value, { rowData }) => {
-  return rowData.scap_content ?
-         linkFormat('scap_contents')(rowData.scap_content.id)(rowData.scap_content.title) :
-         linkFormat('tailoring_files')(rowData.tailoring_file.id)(rowData.tailoring_file.name)
-  // return (<PfTable.Cell>Placeholder</PfTable.Cell>);
+const sourceFileFormat = (fileType) => (value, { rowData }) => {
+  if (fileType === 'scap_content' && rowData.scap_content) {
+    return linkFormat('scap_contents')
+                     (hasPermission(rowData.scap_content.permissions))
+                     ('edit_scap_contents')
+                     (rowData.scap_content.id)
+                     (rowData.scap_content.title)
+  } else if (fileType === 'tailoring_file' && rowData.tailoring_file) {
+    return linkFormat('tailoring_files')
+                     (hasPermission(rowData.tailoring_file.permissions))
+                     ('edit_tailoring_files')
+                     (rowData.tailoring_file.id)
+                     (rowData.tailoring_file.name)
+  } else {
+    return cellFormat('');
+  }
 }
 
-const linkFormat = controller => id => value => <PfTable.Cell>
-  <a href={urlBuilder(`compliance/${controller}`, '', id)}>
-    { value }
-  </a>
-</PfTable.Cell>;
+const hasPermission = permissions => permission => contains(permission, permissions);
+
+const linkFormat = controller => authorizer => permission => id => value => {
+  const inner = authorizer(permission) ?
+    (<a href={urlBuilder(`compliance/${controller}`, 'edit', id)}>
+      { value }
+    </a>) :
+    value
+
+    return cellFormat(inner);
+}
 
 const defaultSortingOrder = {
   FIRST: 'asc',
@@ -33,27 +51,11 @@ const defaultSortingOrder = {
 };
 
 
-
 class ScapContentProfilesList extends React.Component {
   constructor(props) {
     super(props)
 
     const getSortingColumns = () => this.state.sortingColumns || {};
-
-    const flattenRows = rows => {
-      return rows.map(row => {
-        const contentAttrs = row.scap_content ?
-          { scap_content_id: row.scap_content.id ,
-            scap_content_title: row.scap_content.title } :
-          { tailoring_file_id: row.tailoring_file.id ,
-            tailoring_file_name : row.tailoring_file.name }
-
-        return Object.assign({ id: row.id,
-                               title: row.title,
-                               profile_id: row.profile_id }, contentAttrs)
-      });
-    }
-
 
     const sortableTransform = sort.sort({
       getSortingColumns,
@@ -120,7 +122,7 @@ class ScapContentProfilesList extends React.Component {
           customFormatters: [sortableHeaderCellFormatter]
         },
         cell: {
-          formatters: [sourceFileFormat]
+          formatters: [sourceFileFormat('scap_content')]
         },
         property: 'scap_content'
       },
@@ -136,7 +138,7 @@ class ScapContentProfilesList extends React.Component {
           customFormatters: [sortableHeaderCellFormatter]
         },
         cell: {
-          formatters: [sourceFileFormat]
+          formatters: [sourceFileFormat('tailoring_file')]
         },
         property: 'tailoring_file'
       }
@@ -154,7 +156,7 @@ class ScapContentProfilesList extends React.Component {
       rows: this.props.rows
     }
 
-    // enables our custom header formatters extensions to reactabular
+    // enables patternfly custom header formatters extensions to reactabular
     this.customHeaderFormatters = customHeaderFormattersDefinition;
   }
 
@@ -165,15 +167,6 @@ class ScapContentProfilesList extends React.Component {
     console.log('state')
     console.log(this.state)
 
-    // const sortedRows = compose(
-    //   sort.sorter({
-    //     columns,
-    //     sortingColumns,
-    //     sort: orderBy,
-    //     strategy: sort.strategies.byProperty
-    //   })
-    // )(rows);
-    // debugger;
     const sortedRows = sort.sorter({
       columns: columns,
       sortingColumns,

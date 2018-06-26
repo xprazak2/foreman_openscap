@@ -110,9 +110,12 @@ module ForemanOpenscap
                      :resource_type => 'ForemanOpenscap::TailoringFile'
           permission :view_openscap_proxies, { :openscap_proxies => [:openscap_spool] },
                      :resource_type => 'SmartProxy'
+
+          permission :view_scap_content_profiles, { :scap_content_profiles => [:index, :list] },
+                     :resource_type => 'ForemanOpenscap::ScapContentProfile'
         end
 
-        role "Compliance viewer", %i[view_arf_reports view_policies view_scap_contents view_tailoring_files view_openscap_proxies]
+        role "Compliance viewer", %i[view_arf_reports view_policies view_scap_contents view_tailoring_files view_openscap_proxies view_scap_content_profiles]
         role "Compliance manager", %i[view_arf_reports view_policies view_scap_contents
                                       destroy_arf_reports edit_policies edit_scap_contents assign_policies
                                       create_policies create_scap_contents destroy_policies destroy_scap_contents
