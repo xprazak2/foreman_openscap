@@ -5,8 +5,4 @@ class ScapContentProfilesController < ApplicationController
 
   def index
   end
-
-  def list
-    @scap_content_profiles = resource_base
-  end
 end
