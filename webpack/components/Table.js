@@ -1,19 +1,22 @@
 /* eslint-disable */
 
-//  borrowed from katello
+// stolen from katello
 
 import { Table as PfTable } from 'patternfly-react';
 import React from 'react';
-import EllipsisWithTooltip from 'react-ellipsis-with-tooltip';
-import EmptyState from './EmptyState';
+// import EllipsisWithTooltip from 'react-ellipsis-with-tooltip';
+import EmptyState from './emptyState';
+import PaginationRow from './PaginationRow';
 
 export const headerFormat = value => <PfTable.Heading>{value}</PfTable.Heading>;
 export const cellFormat = value => <PfTable.Cell>{value}</PfTable.Cell>;
-export const ellipsisFormat = value => (
-  <PfTable.Cell>
-    <EllipsisWithTooltip>{value}</EllipsisWithTooltip>
-  </PfTable.Cell>
-);
+
+// export const ellipsisFormat = value => (
+//   <PfTable.Cell>
+//     <EllipsisWithTooltip>{value}</EllipsisWithTooltip>
+//   </PfTable.Cell>
+// );
+
 export const TableBody = (props) => {
   const { columns, rows, message } = props;
 
@@ -29,33 +32,60 @@ export const TableBody = (props) => {
 
   return (
     <PfTable.Body
-     rows={rows}
-     rowKey={({ rowIndex }) => rowIndex}
+      rows={rows}
+      rowKey={({ rowIndex }) => rowIndex}
     />
-  )
-}
+  );
+};
 
-class Table extends React.Component {
+export class Table extends React.Component {
   isEmpty() {
     return this.props.rows.length === 0 && this.props.bodyMessage === undefined;
   }
 
   render() {
-    const { columns, rows, emptyState, bodyMessage } = this.props;
-    return this.isEmpty() ? (
-      <EmptyState {...emptyState} />
-    ) : (
-      <PfTable.PfProvider
-        className="table-fixed"
-        striped
-        bordered
-        hover
-        columns={columns}
-      >
-        <PfTable.Header />
-        <TableBody columns={columns} rows={rows} message={bodyMessage} />
-      </PfTable.PfProvider>
+    const { columns, rows, emptyState, bodyMessage, children, itemCount, pagination, onPaginationChange, ...otherProps } = this.props;
+    let { sortingColumns } = this.props;
+
+    let paginationComponent;
+    if (itemCount && pagination) {
+      paginationComponent = (
+        <PaginationRow
+          viewType="table"
+          itemCount={itemCount}
+          pagination={pagination}
+          onChange={onPaginationChange}
+        />
+      );
+    }
+
+    if (this.isEmpty()) {
+      return (<EmptyState {...emptyState} />);
+    }
+
+    const table = (children !== undefined)
+      ? children
+      : [
+        <PfTable.Header key="header" />,
+        <TableBody key="body" columns={columns} rows={rows} message={bodyMessage} rowKey="id" />,
+      ];
+
+    sortingColumns = sortingColumns || {};
+
+    return (
+      <div>
+        <PfTable.PfProvider
+          className="table-fixed"
+          striped
+          bordered
+          hover
+          columns={columns}
+          {...otherProps}
+        >
+          {table}
+        </PfTable.PfProvider>
+        {paginationComponent}
+      </div>
     );
   }
 }
-export default Table;
