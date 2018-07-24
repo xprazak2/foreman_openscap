@@ -5,6 +5,7 @@ import { Spinner } from 'patternfly-react';
 import * as ScapContentProfileActions from '../../actions/scapContentProfiles';
 
 import ScapContentProfilesList from './ScapContentProfilesList';
+import ScapContentProfilesListNewer from './ScapContentProfilesListNewer';
 
 class ScapContentProfiles extends React.Component {
   constructor(props) {
@@ -22,7 +23,7 @@ class ScapContentProfiles extends React.Component {
     const { loading, profiles } = this.props;
     return (
       <Spinner loading={loading}>
-        <ScapContentProfilesList rows={profiles || []} />
+        <ScapContentProfilesListNewer rows={profiles || []} />
       </Spinner>
     )
 
