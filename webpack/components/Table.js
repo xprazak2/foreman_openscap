@@ -46,7 +46,6 @@ class Table extends React.Component {
       <EmptyState {...emptyState} />
     ) : (
       <PfTable.PfProvider
-        className="table-fixed"
         striped
         bordered
         hover

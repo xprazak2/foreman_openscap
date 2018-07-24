@@ -18,6 +18,12 @@ const EmptyState = (props) => {
   const defaultDocumantion = `${documentationLabel} <a href=${docUrl}>${documentationButton}</a>`;
   const showDocsLink = !!(docUrl || customDocumentation);
 
+  const actionButton = action => (
+    <Button href={action.url} bsStyle="primary" bsSize="large">
+      {action.title}
+    </Button>
+  );
+
   return (
     <PfEmptyState>
       <PfEmptyState.Icon type="pf" name={icon} />
@@ -30,11 +36,12 @@ const EmptyState = (props) => {
       )}
       {action && (
         <PfEmptyState.Action>
-          <LinkContainer to={action.url}>
-            <Button href={action.url} bsStyle="primary" bsSize="large">
-              {action.title}
-            </Button>
-          </LinkContainer>
+          { action.rails
+             ? actionButton(action)
+             : <LinkContainer to={action.url}>
+                { actionButton(action) }
+               </LinkContainer>
+          }
         </PfEmptyState.Action>
       )}
       {secondayActions && (

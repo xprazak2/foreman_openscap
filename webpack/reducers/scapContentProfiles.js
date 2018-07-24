@@ -10,8 +10,16 @@ const scapContentProfiles = (state = {}, action) => {
   switch(action.type) {
     case SCAP_CONTENT_PROFILES_REQUEST:
       return { ...state, ...{ loading: true } };
-    case SCAP_CONTENT_PROFILES_SUCCESS:
-      return { ...state, ...{ loading: false, profiles: payload.results } };
+    case SCAP_CONTENT_PROFILES_SUCCESS: {
+      const { page, per_page, subtotal, results } = payload;
+      return { ...state,
+               ...{ loading: false,
+                    profiles: { results,
+                                itemCount: Number(subtotal),
+                                pagination: { page: Number(page),
+                                              perPage: Number(per_page)
+                                            } } } };
+    }
     case SCAP_CONTENT_PROFILES_FAILURE:
       return { ...state, ...{ error: payload.error, loading: false } };
     default:

@@ -11,10 +11,22 @@ import { sortableHeaderCellFormatter } from 'patternfly-react';
 import { Table as PfTable } from 'patternfly-react';
 import { urlBuilder } from '../../helpers';
 
-import { Table as ForemanTable, TableBody as ForemanTableBody } from '../table';
+import { headerFormat, cellFormat, Table as ForemanTable, TableBody as ForemanTableBody } from '../table';
 
-const headerFormat = value => <PfTable.Heading>{value}</PfTable.Heading>;
-const cellFormat = value => <PfTable.Cell>{value}</PfTable.Cell>;
+// const headerFormat = value => <PfTable.Heading>{value}</PfTable.Heading>;
+// const cellFormat = value => <PfTable.Cell>{value}</PfTable.Cell>;
+
+const emptyStateData = {
+  header: __('There are no Scap Content Profiles to display'),
+  description: __('You need to import a Scap Content to see Scap Content Profiles.'),
+  docUrl: 'https://theforeman.org/plugins/foreman_openscap/0.8/index.html#4.1CreatingSCAPcontent',
+  action: {
+    title: __('Create Scap Content'),
+    url: 'scap_contents/new',
+    rails: true
+  },
+};
+
 
 const sourceFileFormat = (fileType) => (value, { rowData }) => {
   if (fileType === 'scap_content' && rowData.scap_content) {
@@ -155,7 +167,7 @@ class ScapContentProfilesListNewer extends React.Component {
         }
       },
       columns: cols,
-      rows: this.props.rows
+      profiles: this.props.profiles
     }
 
     // enables patternfly custom header formatters extensions to reactabular
@@ -164,7 +176,7 @@ class ScapContentProfilesListNewer extends React.Component {
 
 
   render() {
-    const {rows, sortingColumns, columns } = this.state;
+    const {profiles, sortingColumns, columns } = this.state;
 
     console.log('state')
     console.log(this.state)
@@ -174,29 +186,43 @@ class ScapContentProfilesListNewer extends React.Component {
       sortingColumns,
       sort: orderBy,
       strategy: sort.strategies.byProperty
-    })(rows);
+    })(profiles.results);
+
+    const onPaginationChange = (pagination) => {
+      this.props.loadSubscriptions({
+        ...pagination,
+      });
+    };
+
 
     return (
       <div>
-        <PfTable.PfProvider striped
-                            bordered
-                            hover
-                            dataTable
-                            columns={columns}
-                            className="openscap-patternfly"
-                            components={{
-                              header: {
-                                cell: cellProps =>
-                                  this.customHeaderFormatters({
-                                    cellProps,
-                                    columns,
-                                    sortingColumns
-                                  })
-                              }
-                            }}>
+        <ForemanTable
+          columns={columns}
+          emptyState={emptyStateData}
+          rows={sortedRows}
+          components={{
+            header: {
+              cell: cellProps =>
+                this.customHeaderFormatters({
+                  cellProps,
+                  columns,
+                  sortingColumns
+                })
+            }
+          }}
+          itemCount={profiles.itemCount}
+          pagination={profiles.pagination}
+          onPaginationChange={onPaginationChange}
+          inlineEdit
+        >
           <PfTable.Header headerRows={resolve.headerRows({ columns })}/>
-          <PfTable.Body rows={sortedRows} rowKey={'id'} />
-        </PfTable.PfProvider>
+          <ForemanTableBody
+            columns={columns}
+            rows={sortedRows}
+            rowKey="id"
+          />
+        </ForemanTable>
       </div>
     )
   }
