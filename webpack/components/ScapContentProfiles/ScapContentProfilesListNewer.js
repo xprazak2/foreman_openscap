@@ -178,8 +178,11 @@ class ScapContentProfilesListNewer extends React.Component {
   render() {
     const {profiles, sortingColumns, columns } = this.state;
 
-    console.log('state')
-    console.log(this.state)
+    // console.log('state')
+    // console.log(this.state)
+
+    // console.log('props')
+    // console.log(this.props)
 
     const sortedRows = sort.sorter({
       columns: columns,
@@ -189,8 +192,9 @@ class ScapContentProfilesListNewer extends React.Component {
     })(profiles.results);
 
     const onPaginationChange = (pagination) => {
-      this.props.loadSubscriptions({
-        ...pagination,
+      this.props.getScapContentProfiles({
+        page: pagination.page,
+        per_page: pagination.perPage
       });
     };
 
