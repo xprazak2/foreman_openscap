@@ -1,2 +1,2 @@
 collection @scap_content_profiles
-extends "scap_content_profiles/extended"
+extends "data_scap_content_profiles/main"
