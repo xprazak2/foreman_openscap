@@ -72,10 +72,11 @@ export class Table extends React.Component {
     return (
       <div>
         <PfTable.PfProvider
-          className="table-fixed"
+          className="openscap-patternfly"
           striped
           bordered
           hover
+          dataTable
           columns={columns}
           {...otherProps}
         >

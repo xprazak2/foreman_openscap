@@ -1,7 +1,26 @@
+// needed for table header sorting style
 table.dataTable.openscap-patternfly thead th.sort.sorting:after,
 table.dataTable.openscap-patternfly thead th.sort.sorting_asc:after,
 table.dataTable.openscap-patternfly thead th.sort.sorting_desc:after,
 table.dataTable.openscap-patternfly thead th.sort.sorting_asc_disabled:after,
 table.dataTable.openscap-patternfly thead th.sort.sorting_desc_disabled:after {
   display: unset;
+}
+
+
+// taken from katello
+// necessary because of !important table margin css from foreman
+// https://github.com/theforeman/foreman/blob/develop/app/assets/stylesheets/base.scss#L242
+.table + .table-view-pf-pagination {
+  margin-top: -6px !important;
+}
+
+//TODO: for some reason these are missing in our patternfly version
+html .pagination-pf-pagesize.btn-group {
+  display: flex;
+  float: none;
+  margin-bottom: 0;
+  margin-left: 0;
+  margin-right: 5px;
+  width: auto;
 }

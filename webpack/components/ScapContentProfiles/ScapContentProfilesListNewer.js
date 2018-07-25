@@ -167,7 +167,7 @@ class ScapContentProfilesListNewer extends React.Component {
         }
       },
       columns: cols,
-      profiles: this.props.profiles
+      rows: this.props.profiles.results
     }
 
     // enables patternfly custom header formatters extensions to reactabular
@@ -176,20 +176,21 @@ class ScapContentProfilesListNewer extends React.Component {
 
 
   render() {
-    const {profiles, sortingColumns, columns } = this.state;
+    const { rows, sortingColumns, columns } = this.state;
+    const { profiles } = this.props;
 
-    // console.log('state')
-    // console.log(this.state)
+    console.log('state')
+    console.log(this.state)
 
-    // console.log('props')
-    // console.log(this.props)
+    console.log('props')
+    console.log(this.props)
 
     const sortedRows = sort.sorter({
       columns: columns,
       sortingColumns,
       sort: orderBy,
       strategy: sort.strategies.byProperty
-    })(profiles.results);
+    })(rows);
 
     const onPaginationChange = (pagination) => {
       this.props.getScapContentProfiles({
@@ -197,7 +198,6 @@ class ScapContentProfilesListNewer extends React.Component {
         per_page: pagination.perPage
       });
     };
-
 
     return (
       <div>
