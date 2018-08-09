@@ -1,4 +1,5 @@
 require 'deface'
+require 'wisper'
 
 module ForemanOpenscap
   class Engine < ::Rails::Engine
@@ -211,6 +212,9 @@ module ForemanOpenscap
       HostsController.send(:prepend, ForemanOpenscap::HostsControllerExtensions)
       Log.send(:include, ForemanOpenscap::LogExtensions)
       LookupKeysHelper.send(:prepend, ForemanOpenscap::LookupKeysHelperExtensions)
+      Puppetclass.send(:include, ForemanOpenscap::PuppetclassExtensions)
+
+      Wisper.subscribe(ForemanOpenscap::PuppetclassListener.new)
     end
 
     rake_tasks do
