@@ -3,9 +3,12 @@ module ForemanOpenscap
     extend ActiveSupport::Concern
 
     included do
+      include Wisper::Publisher
       has_one :asset, :as => :assetable, :class_name => "::ForemanOpenscap::Asset", dependent: :destroy
       has_many :asset_policies, :through => :asset, :class_name => "::ForemanOpenscap::AssetPolicy"
       has_many :policies, :through => :asset_policies, :class_name => "::ForemanOpenscap::Policy"
+
+      after_save :publish_hostgroup_saved
     end
 
     def inherited_policies
@@ -25,8 +28,13 @@ module ForemanOpenscap
       inherited_ancestry_attribute(:openscap_proxy_id)
     end
 
+    private
+
+    def publish_hostgroup_saved
+      broadcast(:hostgroup_saved, self)
+    end
+
     unless defined?(Katello::System)
-      private
 
       def inherited_ancestry_attribute(attribute)
         if ancestry.present?

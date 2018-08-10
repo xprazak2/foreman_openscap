@@ -5,7 +5,7 @@ module ForemanOpenscap
       policies_param_name = 'policies'
       return unless puppetclass.name == class_name
 
-      unless policies_param = puppetclass.class_params.find_by(key: POLICIES_CLASS_PARAMETER)
+      unless policies_param = puppetclass.class_params.find_by(key: policies_param_name)
         # replace with notification?
         puppetclass.errors[:base] << _("Puppet class %{class} does not have %{parameter} class parameter.") % { :class => class_name, :parameter => policies_param_name }
       end

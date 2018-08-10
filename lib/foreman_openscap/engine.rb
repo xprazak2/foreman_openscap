@@ -215,6 +215,7 @@ module ForemanOpenscap
       Puppetclass.send(:include, ForemanOpenscap::PuppetclassExtensions)
 
       Wisper.subscribe(ForemanOpenscap::PuppetclassListener.new)
+      Wisper.subscribe(ForemanOpenscap::HostgroupListener.new)
     end
 
     rake_tasks do

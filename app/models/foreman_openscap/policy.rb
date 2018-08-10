@@ -16,16 +16,9 @@ module ForemanOpenscap
     has_many :assets, :through => :asset_policies, :as => :assetable, :dependent => :destroy
 
     scoped_search :on => :name, :complete_value => true
-
-    SCAP_PUPPET_CLASS        = 'foreman_scap_client'.freeze
-    POLICIES_CLASS_PARAMETER = 'policies'.freeze
-    SERVER_CLASS_PARAMETER   = 'server'.freeze
-    PORT_CLASS_PARAMETER     = 'port'.freeze
-
     before_validation :update_period_attrs
 
     validates :name, :presence => true, :uniqueness => true, :length => { :maximum => 255 }
-    validate :ensure_needed_puppetclasses
     validates :period, :inclusion => { :in => %w[weekly monthly custom], :message => _('is not a valid value') },
                        :if => Proc.new { |policy| policy.should_validate?('Schedule') }
 
@@ -33,8 +26,6 @@ module ForemanOpenscap
     validate :matching_content_profile, if: Proc.new { |policy| policy.should_validate?('SCAP Content') }
 
     validate :valid_cron_line, :valid_weekday, :valid_day_of_month, :valid_tailoring, :valid_tailoring_profile
-    after_save :assign_policy_to_hostgroups
-    # before_destroy - ensure that the policy has no hostgroups, or classes
 
     default_scope do
       with_taxonomy_scope do
@@ -247,27 +238,6 @@ module ForemanOpenscap
       (Date::DAYS_INTO_WEEK.with_indifferent_access[weekday] + 1) % 7
     end
 
-    def ensure_needed_puppetclasses
-      unless puppetclass = Puppetclass.find_by(name: SCAP_PUPPET_CLASS)
-        errors[:base] << _("Required Puppet class %{class} is not found, please ensure it imported first.") % { :class => SCAP_PUPPET_CLASS }
-        return false
-      end
-
-      unless policies_param = puppetclass.class_params.find_by(key: POLICIES_CLASS_PARAMETER)
-        errors[:base] << _("Puppet class %{class} does not have %{parameter} class parameter.") % { :class => SCAP_PUPPET_CLASS, :parameter => POLICIES_CLASS_PARAMETER }
-        return false
-      end
-
-      policies_param.override      = true
-      policies_param.key_type      = 'array'
-      policies_param.default_value = '<%= @host.policies_enc %>'
-
-      if policies_param.changed? && !policies_param.save
-        errors[:base] << _("%{parameter} class parameter for class %{class} could not be configured.") % { :class => SCAP_PUPPET_CLASS, :parameter => POLICIES_CLASS_PARAMETER }
-        return false
-      end
-    end
-
     def cron_line_split
       cron_line.to_s.split(' ')
     end
@@ -307,16 +277,6 @@ module ForemanOpenscap
       end
     end
 
-    def assign_policy_to_hostgroups
-      if hostgroups.any?
-        puppetclass = find_scap_puppetclass
-        hostgroups.each do |hostgroup|
-          hostgroup.puppetclasses << puppetclass unless hostgroup.puppetclasses.include? puppetclass
-          populate_overrides(puppetclass, hostgroup)
-        end
-      end
-    end
-
     def profile_for_scan
       if tailoring_file_profile
         tailoring_file_profile.profile_id
@@ -324,27 +284,6 @@ module ForemanOpenscap
         scap_content_profile.profile_id
       else
         ''
-      end
-    end
-
-    def find_scap_puppetclass
-      Puppetclass.find_by(name: SCAP_PUPPET_CLASS)
-    end
-
-    def populate_overrides(puppetclass, hostgroup)
-      puppetclass.class_params.where(:override => true).find_each do |override|
-        next unless hostgroup.puppet_proxy && (url = hostgroup.puppet_proxy.url).present?
-
-        case override.key
-        when SERVER_CLASS_PARAMETER
-          lookup_value      = LookupValue.where(:match => "hostgroup=#{hostgroup.to_label}", :lookup_key_id => override.id).first_or_initialize
-          puppet_proxy_fqdn = URI.parse(url).host
-          lookup_value.update_attribute(:value, puppet_proxy_fqdn)
-        when PORT_CLASS_PARAMETER
-          lookup_value      = LookupValue.where(:match => "hostgroup=#{hostgroup.to_label}", :lookup_key_id => override.id).first_or_initialize
-          puppet_proxy_port = URI.parse(url).port
-          lookup_value.update_attribute(:value, puppet_proxy_port)
-        end
       end
     end
   end
