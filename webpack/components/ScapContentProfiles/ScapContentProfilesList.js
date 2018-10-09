@@ -122,11 +122,7 @@ class ScapContentProfilesList extends React.Component {
           customFormatters: [sortableHeaderCellFormatter]
         },
         cell: {
-<<<<<<< HEAD
-          formatters: [cellFormat]
-=======
           formatters: [sourceFileFormat('scap_content')]
->>>>>>> Add permissions, tweak viewing profiles
         },
         property: 'scap_content_title'
       },
@@ -142,11 +138,7 @@ class ScapContentProfilesList extends React.Component {
           customFormatters: [sortableHeaderCellFormatter]
         },
         cell: {
-<<<<<<< HEAD
-          formatters: [cellFormat]
-=======
           formatters: [sourceFileFormat('tailoring_file')]
->>>>>>> Add permissions, tweak viewing profiles
         },
         property: 'tailoring_file_name'
       }
