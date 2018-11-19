@@ -110,11 +110,17 @@ module ForemanOpenscap
       policy = Policy.find(params[:policy_id])
       ArfReport.transaction do
         # TODO:RAILS-4.0: This should become arf_report = ArfReport.find_or_create_by! ...
-        arf_report = ArfReport.create!(:host => asset.host,
+        begin
+
+          arf_report = ArfReport.create!(:host => asset.host,
                                        :reported_at => Time.at(params[:date].to_i),
                                        :status => params[:metrics],
                                        :metrics => params[:metrics],
                                        :openscap_proxy => proxy)
+        rescue => e
+          logger.debug("Arf report not created, cause: #{e.message}")
+          return
+        end
         PolicyArfReport.where(:arf_report_id => arf_report.id, :policy_id => policy.id, :digest => params[:digest]).first_or_create!
         if params[:logs]
           params[:logs].each do |log|

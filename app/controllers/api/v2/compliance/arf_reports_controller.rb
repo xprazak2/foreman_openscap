@@ -50,7 +50,11 @@ module Api
         def create
           arf_report = ForemanOpenscap::ArfReport.create_arf(@asset, @smart_proxy, params.to_unsafe_h)
           @asset.host.refresh_statuses([HostStatus.find_status_by_humanized_name("compliance")])
-          render :json => { :result => :OK, :id => arf_report.id.to_s }
+          unless arf_report
+            render :json => { :result => :fail }
+          else
+            render :json => { :result => :OK, :id => arf_report.id.to_s }
+          end
         end
 
         api :GET, "/compliance/arf_reports/:id/download/", N_("Download bzipped ARF report")
