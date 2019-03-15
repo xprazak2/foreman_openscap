@@ -64,6 +64,9 @@ Rails.application.routes.draw do
           member do
             get 'xml'
           end
+          collection do
+            post 'upload'
+          end
         end
         resources :tailoring_files, :except => %i[new edit] do
           member do

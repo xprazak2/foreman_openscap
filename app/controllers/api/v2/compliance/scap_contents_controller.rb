@@ -3,7 +3,7 @@ module Api::V2
     class ScapContentsController < ::Api::V2::BaseController
       include Foreman::Controller::Parameters::ScapContent
       include ForemanOpenscap::BodyLogExtensions
-      before_action :find_resource, :except => %w[index create]
+      before_action :find_resource, :except => %w[index create upload]
 
       def resource_name(resource = '::ForemanOpenscap::ScapContent')
         super resource
@@ -66,6 +66,20 @@ module Api::V2
         process_response @scap_content.destroy
       end
 
+      api :POST, '/compliance/scap_contents/upload', N_('Upload SCAP contents in bulk')
+      param :directory, String, :desc => N_('Directory to upload from, files should end with .xml')
+      param :files, Array, :desc => N_('File paths to upload from')
+      def upload
+        @result = if params[:directory]
+          ::ForemanOpenscap::BulkUpload.new.upload_from_directory(params[:directory])
+        elsif params[:files]
+          ::ForemanOpenscap::BulkUpload.new.upload_from_files(params[:files])
+        else
+          ::ForemanOpenscap::BulkUpload.new.upload_default
+        end
+        @result.errors.any? ? render(:json => { :errors => @result.errors }, :status => 422) : render(:json => { :skipped => @result.skipped, :created => @result.created }, :status => 200)
+      end
+
       private
 
       def find_resource
@@ -77,6 +91,8 @@ module Api::V2
         case params[:action]
         when 'xml'
           :view
+        when 'upload'
+          :create
         else
           super
         end
