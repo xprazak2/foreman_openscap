@@ -14,6 +14,7 @@ module ForemanOpenscap
     config.autoload_paths += Dir["#{config.root}/app/overrides"]
     config.autoload_paths += Dir["#{config.root}/app/lib"]
     config.autoload_paths += Dir["#{config.root}/app/services"]
+    config.autoload_paths += Dir["#{config.root}/app/graphql"]
     config.autoload_paths += Dir["#{config.root}/lib"]
     config.autoload_paths += Dir["#{config.root}/test/"]
 
@@ -226,6 +227,7 @@ module ForemanOpenscap
       Log.send(:include, ForemanOpenscap::LogExtensions)
       BookmarkControllerValidator.send(:prepend, ForemanOpenscap::BookmarkControllerValidatorExtensions)
       ProxyStatus.status_registry.add(ProxyStatus::OpenscapSpool)
+      Types::Query.send(:include, Types::ForemanOpenscap::QueryExtensions)
     end
 
     rake_tasks do
