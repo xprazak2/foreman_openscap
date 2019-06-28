@@ -181,6 +181,9 @@ module ForemanOpenscap
                         :description => proxy_description,
                         :api_description => N_('ID of OpenSCAP Proxy')
 
+        register_graphql_type :tailoring_file, ::Types::TailoringFile, :record_field
+        register_graphql_type :tailoring_files, ::Types::TailoringFile, :collection_field
+
         if ForemanOpenscap.with_remote_execution?
           options = {
             :description => N_("Run OpenSCAP scan"),
@@ -227,7 +230,7 @@ module ForemanOpenscap
       Log.send(:include, ForemanOpenscap::LogExtensions)
       BookmarkControllerValidator.send(:prepend, ForemanOpenscap::BookmarkControllerValidatorExtensions)
       ProxyStatus.status_registry.add(ProxyStatus::OpenscapSpool)
-      Types::Query.send(:include, Types::ForemanOpenscap::QueryExtensions)
+      # Types::Query.send(:include, Types::ForemanOpenscap::QueryExtensions) unless Foreman.in_setup_db_rake?
     end
 
     rake_tasks do
