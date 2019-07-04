@@ -19,13 +19,13 @@ module ForemanOpenscap
 
     def add_config_tool(hostgroup, klass, name, collection_method)
       item = klass.find_by(:name => name)
-      hostgroup.public_send(collection_method) << item unless hostgroup.public_send(collection_method).include? item
+      hostgroup.public_send(collection_method) << item unless item.nil? || hostgroup.public_send(collection_method).include? item
       item
     end
 
     def remove_config_tool(hostgroup, klass, name, collection_method)
       item = klass.find_by(:name => name)
-      hostgroup.public_send(collection_method).delete(item) if hostgroup.public_send(collection_method).include? item
+      hostgroup.public_send(collection_method).delete(item) if item.present? && hostgroup.public_send(collection_method).include? item
       item
     end
 
