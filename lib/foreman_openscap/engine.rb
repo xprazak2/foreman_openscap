@@ -184,6 +184,8 @@ module ForemanOpenscap
         register_graphql_query_field :tailoring_file, ::Types::TailoringFile, :record_field
         register_graphql_query_field :tailoring_files, ::Types::TailoringFile, :collection_field
 
+        register_graphql_mutation_field :delete_tailoring_file, ::Mutations::TailoringFiles::Delete
+
         if ForemanOpenscap.with_remote_execution?
           options = {
             :description => N_("Run OpenSCAP scan"),
