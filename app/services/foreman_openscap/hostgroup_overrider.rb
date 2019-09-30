@@ -10,6 +10,12 @@ module ForemanOpenscap
       config = @name_sevice.config_for @policy.deploy_by.to_sym
       return unless config.available?
       return unless config.managed_overrides?
+
+      unless config.find_config_item
+        @policy.errors[:base] << config.no_config_item_error
+        return
+      end
+
       @policy.hostgroups.each do |hostgroup|
         populate_overrides hostgroup, config
       end

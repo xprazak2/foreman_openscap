@@ -24,9 +24,7 @@ module ForemanOpenscap
       item = config.find_config_item
 
       unless item
-        err = _("Required %{msg_name} %{class} was not found, please ensure it is imported first.") %
-          { :class => config.config_item_name, :msg_name => config.msg_name }
-        @policy.errors[:base] << err
+        @policy.errors[:base] << config.no_config_item_error
         return
       end
 

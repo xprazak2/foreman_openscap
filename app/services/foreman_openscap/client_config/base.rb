@@ -42,6 +42,11 @@ module ForemanOpenscap
         # all_puppetclasses, all_ansible_roles methods return Array, not ActiveRecord::Relation
         scope.find { |item| item.name == config_item_name }
       end
+
+      def no_config_item_error
+        _("Required %{msg_name} %{class} was not found, please ensure it is imported first.") %
+          { :class => config_item_name, :msg_name => msg_name }
+      end
     end
   end
 end
