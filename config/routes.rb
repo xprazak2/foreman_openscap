@@ -38,6 +38,8 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :scap_content_profiles, :only => [:index]
+
     resources :tailoring_files, :except => [:show] do
       member do
         get 'xml'
