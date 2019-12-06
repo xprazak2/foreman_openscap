@@ -8,6 +8,8 @@ test/dummy/.sass-cache
 foreman_openscap-*.gem
 .idea/
 Gemfile.lock
+node_modules
+package-lock.json
 
 locale/*.mo
 locale/*/*.pox
