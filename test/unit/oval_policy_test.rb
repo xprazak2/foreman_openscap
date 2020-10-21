@@ -62,4 +62,19 @@ class OvalPolicyTest < ActiveSupport::TestCase
     policy.day_of_month = nil
     assert policy.save
   end
+
+  test "should add and remove hosts for OVAL policy" do
+    host = FactoryBot.create(:oval_host)
+    policy = ForemanOpenscap::OvalPolicy.new(:name => "custom_policy",
+                                             :period => 'monthly',
+                                             :day_of_month => '5',
+                                             :host_ids => [host.id])
+
+    assert policy.save
+    assert policy.reload.hosts.include?(host)
+
+    policy.host_ids = []
+    assert policy.save
+    refute policy.reload.hosts.include?(host)
+  end
 end

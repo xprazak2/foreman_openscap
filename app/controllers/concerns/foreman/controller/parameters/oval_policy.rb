@@ -4,7 +4,8 @@ module Foreman::Controller::Parameters::OvalPolicy
   class_methods do
     def filter_params_list
       [:description, :name, :period,
-       :weekday, :day_of_month, :cron_line, 
+       :weekday, :day_of_month, :cron_line,
+       :host_ids => [],
        :location_ids => [], :organization_ids => []]
     end
 
