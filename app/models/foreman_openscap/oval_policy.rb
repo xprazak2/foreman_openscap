@@ -14,11 +14,25 @@ module ForemanOpenscap
     has_many :oval_facets, :through => :oval_facet_oval_policies, :class_name => 'ForemanOpenscap::Host::OvalFacet'
     has_many :hosts, :through => :oval_facets
 
+    has_many :hostgroup_oval_facet_oval_policies, :class_name => 'ForemanOpenscap::HostgroupOvalFacetOvalPolicy'
+    has_many :hostgroup_oval_facets, :through => :hostgroup_oval_facet_oval_policies, :class_name => 'ForemanOpenscap::Hostgroup::OvalFacet', :source => :oval_facet
+    has_many :hostgroups, :through => :hostgroup_oval_facets
+
     def host_ids=(host_ids)
-      filtered_ids = host_ids.uniq.reject { |id| respond_to?(:empty) && id.empty? }
-      existing_facets = ForemanOpenscap::Host::OvalFacet.where(:host_id => filtered_ids)
-      new_facets = (filtered_ids - existing_facets.pluck(:host_id)).map { |id| ForemanOpenscap::Host::OvalFacet.new(:host_id => id) }
-      self.oval_facets = existing_facets + new_facets
+      self.oval_facets = facets_to_assign(host_ids, :host_id, ForemanOpenscap::Host::OvalFacet)
+    end
+
+    def hostgroup_ids=(hostgroup_ids)
+      self.hostgroup_oval_facets = facets_to_assign(hostgroup_ids, :hostgroup_id, ForemanOpenscap::Hostgroup::OvalFacet)
+    end
+
+    private
+
+    def facets_to_assign(ids, key, facet_class)
+      filtered_ids = ids.uniq.reject { |id| respond_to?(:empty) && id.empty? }
+      existing_facets = facet_class.where(key => filtered_ids)
+      new_facets = (filtered_ids - existing_facets.pluck(key)).map { |id| facet_class.new(key => id) }
+      existing_facets + new_facets
     end
   end
 end

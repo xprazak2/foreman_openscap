@@ -215,8 +215,11 @@ module ForemanOpenscap
           configure_host do
             extend_model ForemanOpenscap::OvalFacetHostExtensions
           end
-        end
 
+          configure_hostgroup(ForemanOpenscap::Hostgroup::OvalFacet) do
+            extend_model ForemanOpenscap::OvalFacetHostgroupExtensions
+          end
+        end
 
         describe_host do
           multiple_actions_provider :compliance_host_multiple_actions
@@ -238,9 +241,9 @@ module ForemanOpenscap
       ::Host::Managed.send(:include, ForemanOpenscap::OpenscapProxyCoreExtensions)
       ::Host::Managed.send(:prepend, ForemanOpenscap::HostExtensions)
       HostsHelper.send(:prepend, ForemanOpenscap::HostsHelperExtensions)
-      Hostgroup.send(:include, ForemanOpenscap::OpenscapProxyExtensions)
-      Hostgroup.send(:include, ForemanOpenscap::OpenscapProxyCoreExtensions)
-      Hostgroup.send(:include, ForemanOpenscap::HostgroupExtensions)
+      ::Hostgroup.send(:include, ForemanOpenscap::OpenscapProxyExtensions)
+      ::Hostgroup.send(:include, ForemanOpenscap::OpenscapProxyCoreExtensions)
+      ::Hostgroup.send(:include, ForemanOpenscap::HostgroupExtensions)
       SmartProxy.send(:include, ForemanOpenscap::SmartProxyExtensions)
       HostsController.send(:prepend, ForemanOpenscap::HostsControllerExtensions)
       HostsController.send(:include, ForemanOpenscap::HostsAndHostgroupsControllerExtensions)
