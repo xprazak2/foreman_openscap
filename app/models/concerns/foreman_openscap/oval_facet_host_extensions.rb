@@ -11,5 +11,13 @@ module ForemanOpenscap
       combined += hostgroup.oval_policies + hostgroup.inherited_oval_policies if hostgroup
       combined.uniq
     end
+
+    def oval_policies_enc_raw
+      combined_oval_policies.map(:to_enc)
+    end
+
+    def oval_policies_enc
+      oval_policies_enc_raw.to_json
+    end
   end
 end

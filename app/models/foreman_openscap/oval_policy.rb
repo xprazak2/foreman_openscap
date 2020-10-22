@@ -26,6 +26,13 @@ module ForemanOpenscap
       self.hostgroup_oval_facets = facets_to_assign(hostgroup_ids, :hostgroup_id, ForemanOpenscap::Hostgroup::OvalFacet)
     end
 
+    def to_enc
+      {
+        :id => id,
+        :download_path => 'xyz'
+      }.merge(period_enc).with_indifferent_access
+    end
+
     private
 
     def facets_to_assign(ids, key, facet_class)

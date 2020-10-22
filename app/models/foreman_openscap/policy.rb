@@ -22,7 +22,6 @@ module ForemanOpenscap
     scoped_search :relation => :scap_content_profile, :on => :title, :rename => 'profile', :complete_value => true
     scoped_search :relation => :tailoring_file, :on => :name, :rename => 'tailoring_file', :complete_value => true
     scoped_search :relation => :tailoring_file_profile, :on => :title, :rename => 'tailoring_file_profile', :complete_value => true
-    before_validation :update_period_attrs
 
     def self.deploy_by_variants
       %w[puppet ansible manual]
@@ -38,7 +37,6 @@ module ForemanOpenscap
     validates :scap_content_id, presence: true, if: Proc.new { |policy| policy.should_validate?('SCAP Content') }
     validate :matching_content_profile, if: Proc.new { |policy| policy.should_validate?('SCAP Content') }
 
-    # validate :valid_cron_line, :valid_weekday, :valid_day_of_month, :valid_tailoring, :valid_tailoring_profile, :no_mixed_deployments
     validate :valid_tailoring, :valid_tailoring_profile, :no_mixed_deployments
     validate :valid_cron_line, :valid_weekday, :valid_day_of_month, :if => Proc.new { |policy| policy.should_validate?('Schedule') }
     after_save :assign_policy_to_hostgroups
@@ -217,17 +215,6 @@ module ForemanOpenscap
       @wizard_initiated
     end
 
-    def update_period_attrs
-      case period
-      when 'monthly'
-        erase_period_attrs(%w[cron_line weekday])
-      when 'weekly'
-        erase_period_attrs(%w[cron_line day_of_month])
-      when 'custom'
-        erase_period_attrs(%w[weekday day_of_month])
-      end
-    end
-
     private
 
     def html_error_message(message)
@@ -236,38 +223,6 @@ module ForemanOpenscap
         '</strong></div>'
       error_message.html_safe
     end
-
-    def erase_period_attrs(attrs)
-      attrs.each { |attr| self.public_send("#{attr}=", nil) }
-    end
-
-    def period_enc
-      # get crontab expression as an array (minute hour day_of_month month day_of_week)
-      cron_parts = case period
-                   when 'weekly'
-                     ['0', '1', '*', '*', weekday_number.to_s]
-                   when 'monthly'
-                     ['0', '1', day_of_month.to_s, '*', '*']
-                   when 'custom'
-                     cron_line_split
-                   else
-                     raise 'invalid period specification'
-                   end
-
-      {
-        'minute'   => cron_parts[0],
-        'hour'     => cron_parts[1],
-        'monthday' => cron_parts[2],
-        'month'    => cron_parts[3],
-        'weekday'  => cron_parts[4],
-      }
-    end
-
-    def weekday_number
-      # 0 is sunday, 1 is monday in cron, while DAYS_INTO_WEEK has 0 as monday, 6 as sunday
-      (Date::DAYS_INTO_WEEK.with_indifferent_access[weekday] + 1) % 7
-    end
-
 
     def valid_tailoring
       errors.add(:tailoring_file_id, _("must be present when tailoring file profile present")) if tailoring_file_profile_id && !tailoring_file_id
