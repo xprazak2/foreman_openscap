@@ -1,7 +1,7 @@
 module ForemanOpenscap
   module OvalConfig
     class SetupCheck
-      attr_reader :result, :id, :fail_msg_data
+      attr_reader :result, :id
 
       def initialize(id, title, fail_msg)
         @id = id
@@ -23,8 +23,15 @@ module ForemanOpenscap
         @result == :fail
       end
 
+      def passed?
+        @result == :pass
+      end
+
+      def not_checked?
+        @result == :not_checked
+      end
+
       def fail_msg
-        binding.pry
         @fail_msg.call @fail_msg_data
       end
 
@@ -38,9 +45,9 @@ module ForemanOpenscap
 
       def readable_result
         {
-          :pass => "OK",
-          :fail => "Failed",
-          :not_checked => "Not Checked"
+          :pass => _("OK"),
+          :fail => _("Failed"),
+          :not_checked => _("Not Checked")
         }[@result]
       end
     end
