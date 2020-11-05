@@ -27,6 +27,10 @@ module ForemanOpenscap
         }
       end
 
+      def ansible_role_missing_msg
+        _("theforeman.foreman_scap_client Ansible Role not found, please import it before running this action again.")
+      end
+
       private
 
       def policy_types

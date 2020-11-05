@@ -10,8 +10,19 @@ module ForemanOpenscap
         @result = :not_checked
       end
 
+      def initialize(hash)
+        @id = hash[:id]
+        @title = hash[:title]
+        @fail_msg = hash[:fail_msg]
+        @result = :not_checked
+      end
+
       def fail_with!(fail_data)
         @fail_msg_data = fail_data
+        fail!
+      end
+
+      def fail!
         @result = :fail
       end
 

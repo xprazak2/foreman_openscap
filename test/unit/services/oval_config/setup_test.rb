@@ -1,5 +1,4 @@
 require 'test_plugin_helper'
-require 'pry-byebug'
 
 class ForemanOpenscap::OvalConfig::SetupTest < ActiveSupport::TestCase
 
