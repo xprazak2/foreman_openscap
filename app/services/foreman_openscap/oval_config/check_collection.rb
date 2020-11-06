@@ -1,14 +1,14 @@
 module ForemanOpenscap
   module OvalConfig
     class CheckCollection
-      attr_reader :checks, :success_check
+      attr_reader :checks
 
-      def initialize(initial_checks)
+      def initialize(initial_check_attrs = [])
         @checks = initial_check_attrs.map { |hash| SetupCheck.new hash }
       end
 
       def all_passed?
-        @checks.all? { |item| item.pass? }
+        @checks.all? { |item| item.passed? }
       end
 
       def find_check(check_id)
@@ -29,6 +29,11 @@ module ForemanOpenscap
 
       def add_check(check)
         @checks << check
+        self
+      end
+
+      def merge(other)
+        @checks = @checks.concat other.checks
         self
       end
 

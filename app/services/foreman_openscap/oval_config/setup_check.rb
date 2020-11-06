@@ -7,14 +7,15 @@ module ForemanOpenscap
         @id = id
         @title = title
         @fail_msg = fail_msg
-        @result = :not_checked
+        @result = :skip
       end
 
       def initialize(hash)
         @id = hash[:id]
         @title = hash[:title]
         @fail_msg = hash[:fail_msg]
-        @result = :not_checked
+        @errors = hash[:errors]
+        @result = :skip
       end
 
       def fail_with!(fail_data)
@@ -24,10 +25,12 @@ module ForemanOpenscap
 
       def fail!
         @result = :fail
+        self
       end
 
       def pass!
         @result = :pass
+        self
       end
 
       def failed?
@@ -38,28 +41,21 @@ module ForemanOpenscap
         @result == :pass
       end
 
-      def not_checked?
-        @result == :not_checked
+      def skipped?
+        @result == :skip
       end
 
       def fail_msg
-        @fail_msg.call @fail_msg_data
+        @fail_msg.call @fail_msg_data if @fail_msg
       end
 
       def to_h
         {
           :title => @title,
-          :result => readable_result,
-          :fail_message => failed? ? fail_msg : nil
+          :result => @result,
+          :fail_message => failed? ? fail_msg : nil,
+          :errors => @errors
         }
-      end
-
-      def readable_result
-        {
-          :pass => _("OK"),
-          :fail => _("Failed"),
-          :not_checked => _("Not Checked")
-        }[@result]
       end
     end
   end

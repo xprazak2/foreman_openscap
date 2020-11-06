@@ -179,7 +179,7 @@ module ForemanOpenscap
 
         proxy_description = N_('OpenSCAP Proxy to use for fetching SCAP content and uploading ARF reports. Leave blank and override appropriate parameters when using proxy load balancer.')
 
-        smart_proxy_for Hostgroup, :openscap_proxy,
+        smart_proxy_for ::Hostgroup, :openscap_proxy,
                         :feature => 'Openscap',
                         :label => N_('OpenSCAP Proxy'),
                         :description => proxy_description,

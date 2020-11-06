@@ -1,8 +1,10 @@
 require 'test_plugin_helper'
+require 'pry-byebug'
 
 class Api::V2::Compliance::OvalPoliciesControllerTest < ActionController::TestCase
   setup do
     @attributes = { :oval_policy => { :name => 'my_policy', :period => 'weekly', :weekday => 'friday' } }
+    @config = ForemanOpenscap::ClientConfig::Ansible.new(::ForemanOpenscap::OvalPolicy)
   end
 
   test "should get index of OVAL policies" do
@@ -50,5 +52,60 @@ class Api::V2::Compliance::OvalPoliciesControllerTest < ActionController::TestCa
     delete :destroy, :params => { :id => policy.id }, :session => set_session_user
     assert_response :ok
     refute ForemanOpenscap::OvalPolicy.exists?(policy.id)
+  end
+
+  test "should assign policy to multiple hostgroups correctly" do
+    proxy = FactoryBot.create(:openscap_proxy)
+    hg1 = FactoryBot.create(:hostgroup, :openscap_proxy => proxy)
+    hg2 = FactoryBot.create(:hostgroup, :openscap_proxy => proxy)
+    policy = FactoryBot.create(:oval_policy)
+    setup_ansible
+
+    assert_empty hg1.oval_policies
+    assert_empty hg2.oval_policies
+
+    post :assign_hostgroups, :params => { :id => policy.id, :hostgroup_ids => [hg1, hg2].pluck(:id) }, :session => set_session_user
+    assert_equal "OVAL policy successfully configured with hostgroups.", ActiveSupport::JSON.decode(@response.body)['message']
+
+    assert_equal 2, hg1.lookup_values.count
+    server_value = @server_key.lookup_values.find_by :match => "hostgroup=#{hg1.name}"
+    port_value = @port_key.lookup_values.find_by :match => "hostgroup=#{hg1.name}"
+    assert_equal proxy.hostname, server_value.value
+    assert_equal proxy.port, port_value.value
+  end
+
+  test "should not assign policy to hostgroup without openscap proxy" do
+    hg = FactoryBot.create(:hostgroup)
+    policy = FactoryBot.create(:oval_policy)
+    setup_ansible
+
+    assert_empty hg.oval_policies
+
+    post :assign_hostgroups, :params => { :id => policy.id, :hostgroup_ids => hg.id }, :session => set_session_user
+    res = ActiveSupport::JSON.decode(@response.body)['results'].first
+    assert_equal "Was #{hg.name} hostgroup configured successfully?", res['title']
+    assert_equal "fail", res['result']
+    assert_equal "Assign openscap_proxy before proceeding.", res['fail_message']
+    hg.reload
+    assert_empty hg.oval_policies
+  end
+
+  test "should not assign policy to hostgroup when ansible role not present" do
+    hg = FactoryBot.create(:hostgroup)
+    policy = FactoryBot.create(:oval_policy)
+    assert_empty hg.oval_policies
+
+    post :assign_hostgroups, :params => { :id => policy.id, :hostgroup_ids => hg.id }, :session => set_session_user
+    res = ActiveSupport::JSON.decode(@response.body)['results'].first
+    assert_equal 'theforeman.foreman_scap_client Ansible Role not found, please import it before running this action again.', res['fail_message']
+    hg.reload
+    assert_empty hg.oval_policies
+  end
+
+  def setup_ansible
+    @ansible_role = FactoryBot.create(:ansible_role, :name => @config.ansible_role_name)
+    @port_key = FactoryBot.create(:ansible_variable, :key => @config.port_param, :ansible_role => @ansible_role)
+    @server_key = FactoryBot.create(:ansible_variable, :key => @config.server_param, :ansible_role => @ansible_role)
+    FactoryBot.create(:ansible_variable, :key => @config.policies_param, :ansible_role => @ansible_role)
   end
 end

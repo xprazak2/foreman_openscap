@@ -57,13 +57,24 @@ module Api::V2
         process_response @oval_policy.destroy
       end
 
+      def assign_hostgroups
+        check_collection = ::ForemanOpenscap::OvalConfig::Configure.new.assign_hostgroups(@oval_policy, params["hostgroup_ids"])
 
-      private
+        if check_collection.all_passed?
+          render :json => { :message => "OVAL policy successfully configured with hostgroups." }
+        else
+          render :json => { :results => check_collection.find_failed.map(&:to_h) }
+        end
+      end
 
-      # def find_resource
-      #   not_found && return if params[:id].blank?
-      #   instance_variable_set("@oval_policy", resource_scope.find(params[:id]))
-      # end
+      def action_permission
+        case params[:action]
+        when 'assign_hostgroups'
+          :edit
+        else
+          super
+        end
+      end
     end
   end
 end

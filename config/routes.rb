@@ -90,7 +90,11 @@ Rails.application.routes.draw do
         post 'arf_reports/:cname/:policy_id/:date', \
              :constraints => { :cname => /[^\/]+/ }, :to => 'arf_reports#create'
 
-        resources :oval_policies
+        resources :oval_policies do
+          member do
+            post 'assign_hostgroups'
+          end
+        end
         resources :oval_configs, :only => [] do
           collection do
             post 'setup'
