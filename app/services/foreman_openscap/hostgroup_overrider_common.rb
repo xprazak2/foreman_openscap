@@ -1,16 +1,17 @@
 module ForemanOpenscap
   module HostgroupOverriderCommon
-    def add_overrides(collection, hostgroup, config)
+    def add_overrides(collection, host_or_hg, config)
+      model_match = host_or_hg.class.name.underscore =~ /\Ahostgroup\z/ ? "hostgroup" : "fqdn"
       collection.where(:override => true).find_each do |override|
-        return unless hostgroup.openscap_proxy && (url = hostgroup.openscap_proxy.url).present?
+        return unless host_or_hg.openscap_proxy && (url = host_or_hg.openscap_proxy.url).present?
 
         openscap_proxy_uri = URI.parse(url)
         case override.key
         when config.server_param
-          lookup_value = LookupValue.where(:match => "hostgroup=#{hostgroup.to_label}", :lookup_key_id => override.id).first_or_initialize
+          lookup_value = LookupValue.where(:match => "#{model_match}=#{host_or_hg.to_label}", :lookup_key_id => override.id).first_or_initialize
           lookup_value.update_attribute(:value, openscap_proxy_uri.host)
         when config.port_param
-          lookup_value = LookupValue.where(:match => "hostgroup=#{hostgroup.to_label}", :lookup_key_id => override.id).first_or_initialize
+          lookup_value = LookupValue.where(:match => "#{model_match}=#{host_or_hg.to_label}", :lookup_key_id => override.id).first_or_initialize
           lookup_value.update_attribute(:value, openscap_proxy_uri.port)
         end
       end

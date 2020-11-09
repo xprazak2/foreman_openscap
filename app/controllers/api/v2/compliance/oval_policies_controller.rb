@@ -28,8 +28,6 @@ module Api::V2
           param :weekday, String, :desc => N_('OVAL Policy schedule weekday (only if period == "weekly")')
           param :day_of_month, Integer, :desc => N_('OVAL Policy schedule day of month (only if period == "monthly")')
           param :cron_line, String, :desc => N_('OVAL Policy schedule cron line (only if period == "custom")')
-          param :host_ids, Array, :desc => N_('Array of host IDs')
-          param :hostgroup_ids, Array, :desc => N_('Array of hostgroup IDs')
           param_group :taxonomies, ::Api::V2::BaseController
         end
       end
@@ -57,22 +55,40 @@ module Api::V2
         process_response @oval_policy.destroy
       end
 
-      def assign_hostgroups
-        check_collection = ::ForemanOpenscap::OvalConfig::Configure.new.assign_hostgroups(@oval_policy, params["hostgroup_ids"])
+      api :GET, '/compliance/oval_policies/:id/assign_hostgroups', N_('Assign hostgroups to an OVAL Policy')
+      param :id, :identifier, :required => true
+      param :hostgroup_ids, Array, :desc => N_('Array of hostgroup IDs')
 
-        if check_collection.all_passed?
-          render :json => { :message => "OVAL policy successfully configured with hostgroups." }
-        else
-          render :json => { :results => check_collection.find_failed.map(&:to_h) }
-        end
+      def assign_hostgroups
+        assign _('hostgroups'), oval_policy_params["hostgroup_ids"], Hostgroup
+      end
+
+      api :GET, '/compliance/oval_policies/:id/assign_hosts', N_('Assign hosts to an OVAL Policy')
+      param :id, :identifier, :required => true
+      param :host_ids, Array, :desc => N_('Array of host IDs')
+
+      def assign_hosts
+        assign _('hosts'), oval_policy_params["host_ids"], Host
       end
 
       def action_permission
         case params[:action]
-        when 'assign_hostgroups'
+        when 'assign_hostgroups', 'assign_hosts'
           :edit
         else
           super
+        end
+      end
+
+      private
+
+      def assign(resource_plural, ids, model_class)
+        check_collection = ::ForemanOpenscap::OvalConfig::Configure.new.assign_hosts(@oval_policy, ids, model_class)
+
+        if check_collection.all_passed?
+          render :json => { :message => (_("OVAL policy successfully configured with %s.") % resource_plural) }
+        else
+          render :json => { :results => check_collection.find_failed.map(&:to_h) }
         end
       end
     end

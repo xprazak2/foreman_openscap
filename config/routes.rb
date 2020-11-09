@@ -93,6 +93,7 @@ Rails.application.routes.draw do
         resources :oval_policies do
           member do
             post 'assign_hostgroups'
+            post 'assign_hosts'
           end
         end
         resources :oval_configs, :only => [] do

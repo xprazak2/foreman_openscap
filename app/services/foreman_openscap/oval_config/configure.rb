@@ -7,50 +7,58 @@ module ForemanOpenscap
         @config = ForemanOpenscap::ClientConfig::Ansible.new(::ForemanOpenscap::OvalPolicy)
       end
 
-      def assign_hostgroups(oval_policy, hostgroup_ids)
+      def assign(oval_policy, ids, model_class)
         check_collection = ::ForemanOpenscap::OvalConfig::Setup.new.run
         return check_collection unless check_collection.all_passed?
 
         ansible_role = @config.find_config_item
 
-        hgs_with_proxy, hgs_without_proxy = openscap_proxy_associated hostgroup_ids
-        oval_policy.hostgroup_ids = hgs_with_proxy.pluck(:id)
+        if model_class == Hostgroup
+          roles_method = :inherited_and_own_ansible_roles
+          ids_method = :hostgroup_ids
+        else
+          roles_method = :all_ansible_roles
+          ids_method = :host_ids
+        end
 
-        check_collection = hgs_without_proxy_to_check hgs_without_proxy
+        items_with_proxy, items_without_proxy = openscap_proxy_associated(ids, model_class)
+
+        oval_policy.send(ids_method, items_with_proxy.pluck(:ids))
+
+        check_collection = without_proxy_to_check items_without_proxy
 
         unless oval_policy.save
           return check_collection.add_check(model_to_check oval_policy)
         end
 
-        check_collection.merge(modify_hostgroups hgs_with_proxy, oval_policy, ansible_role)
+        check_collection.merge(modify_items items_with_proxy, oval_policy, ansible_role, roles_method)
       end
 
       private
 
-      def openscap_proxy_associated(hostgroup_ids)
-        ::Hostgroup.where(:id => hostgroup_ids).partition(&:openscap_proxy)
+      def openscap_proxy_associated(ids, model_class)
+        model_class.where(:id => ids).partition(&:openscap_proxy)
       end
 
-      def modify_hostgroups(hgs, oval_policy, ansible_role)
-        hgs.reduce(CheckCollection.new) do |memo, hg|
-          role_ids = hg.ansible_role_ids + [ansible_role.id]
-          hg.ansible_role_ids = hg.ansible_role_ids + [ansible_role.id] unless hg.inherited_and_own_ansible_roles.include? ansible_role
-          hg.save if hg.changed?
-          memo.add_check(model_to_check hg)
-          add_overrides ansible_role.ansible_variables, hg, @config
+      def modify_items(items, oval_policy, ansible_role, roles_method)
+        items.reduce(CheckCollection.new) do |memo, item|
+          role_ids = item.ansible_role_ids + [ansible_role.id]
+          item.ansible_role_ids = role_ids unless item.send(roles_method).include? ansible_role
+          item.save if item.changed?
+          memo.add_check(model_to_check item)
+          add_overrides ansible_role.ansible_variables, item, @config
           memo
         end
       end
 
-      def hgs_without_proxy_to_check(hgs)
-        hgs.reduce(CheckCollection.new) do |memo, hg|
+      def without_proxy_to_check(items, check_title, check_fail_msg)
+        items.reduce(CheckCollection.new) do |memo, item|
           memo.add_check(
             SetupCheck.new(
-              :title => (_("Was %s hostgroup configured successfully?") % hg.name),
-              :fail_msg => ->(_) { _("Assign openscap_proxy before proceeding.")}
+              :title => (_("Was %s configured successfully?") % item.class.name),
+              :fail_msg => ->(_) { _("Assign openscap_proxy to %s before proceeding.") % item.name }
             ).fail!
           )
-        end
       end
 
       def model_to_check(model)

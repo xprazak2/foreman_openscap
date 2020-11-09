@@ -54,6 +54,26 @@ class Api::V2::Compliance::OvalPoliciesControllerTest < ActionController::TestCa
     refute ForemanOpenscap::OvalPolicy.exists?(policy.id)
   end
 
+  test "should assign policy to multiple hosts correctly" do
+    proxy = FactoryBot.create(:openscap_proxy)
+    host1 = FactoryBot.create(:compliance_host, :openscap_proxy => proxy)
+    host2 = FactoryBot.create(:compliance_host, :openscap_proxy => proxy)
+    policy = FactoryBot.create(:oval_policy)
+    setup_ansible
+
+    assert_empty host1.oval_policies
+    assert_empty host2.oval_policies
+
+    post :assign_hosts, :params => { :id => policy.id, :host_ids => [host1, host2].pluck(:id) }, :session => set_session_user
+    assert_equal "OVAL policy successfully configured with hosts.", ActiveSupport::JSON.decode(@response.body)['message']
+
+    assert_equal 2, host1.lookup_values.count
+    server_value = @server_key.lookup_values.find_by :match => "fqdn=#{host1.name}"
+    port_value = @port_key.lookup_values.find_by :match => "fqdn=#{host1.name}"
+    assert_equal proxy.hostname, server_value.value
+    assert_equal proxy.port, port_value.value
+  end
+
   test "should assign policy to multiple hostgroups correctly" do
     proxy = FactoryBot.create(:openscap_proxy)
     hg1 = FactoryBot.create(:hostgroup, :openscap_proxy => proxy)
