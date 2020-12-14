@@ -53,7 +53,33 @@ module Api::V2
       api :POST, '/compliance/content_stream/:id/sync', N_('Sync a Content Stream')
       param :id, :identifier, :required => true
       def sync
-        process_response true
+        res = @content_stream.sync
+        binding.pry
+        render :json => res
+      end
+
+      api :GET, '/compliance/content_stream/:id/list', N_('List files in a Content Stream')
+      param :id, :identifier, :required => true
+      def list
+        res = @content_stream.list
+        binding.pry
+        render :json => res
+      end
+
+      api :POST, '/compliance/content_stream/:id/check', N_('Check for changes in a Content Stream')
+      param :id, :identifier, :required => true
+      def check
+        res = @content_stream.check
+        render :json => res
+      end
+
+      def action_permission
+        case params[:action]
+        when 'list', 'check'
+          :view
+        else
+          super
+        end
       end
     end
   end

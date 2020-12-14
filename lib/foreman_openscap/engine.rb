@@ -137,6 +137,16 @@ module ForemanOpenscap
                      :resource_type => 'ForemanOpenscap::OvalPolicy'
           permission :destroy_oval_policies, { 'api/v2/compliance/oval_policies' => %i[destroy] },
                      :resource_type => 'ForemanOpenscap::OvalPolicy'
+          permission :view_content_streams, { 'api/v2/compliance/content_streams' => %i[index show check list] },
+                     :resource_type => 'ForemanOpenscap::ContentStream'
+          permission :edit_content_streams, { 'api/v2/compliance/content_streams' => %i[update] },
+                     :resource_type => 'ForemanOpenscap::ContentStream'
+          permission :create_content_streams, { 'api/v2/compliance/content_streams' => %i[create] },
+                     :resource_type => 'ForemanOpenscap::ContentStream'
+          permission :destroy_content_streams, { 'api/v2/compliance/content_streams' => %i[destroy] },
+                     :resource_type => 'ForemanOpenscap::ContentStream'
+          permission :sync_content_streams, { 'api/v2/compliance/content_streams' => %i[sync] },
+                     :resource_type => 'ForemanOpenscap::ContentStream'
         end
 
         role "Compliance viewer", %i[view_arf_reports view_policies view_scap_contents view_tailoring_files view_openscap_proxies],

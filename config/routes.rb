@@ -104,6 +104,8 @@ Rails.application.routes.draw do
         resources :content_streams, :except => %i[new edit] do
           member do
             post 'sync'
+            get 'list'
+            post 'check'
           end
         end
       end
