@@ -11,19 +11,10 @@ class ForemanOpenscap::Oval::CvesTest < ActiveSupport::TestCase
     host = FactoryBot.create(:host)
     assert_empty host.cves
     @instance.create host, oval_data
+    refute_empty host.oval_definitions
     refute_empty host.cves
 
-    assert_equal host.cves, host.cves.distinct
-  end
-
-  test "should filter out CVEs that do not affect the host" do
-    oval_data = create_cve_data @fxs.two
-    host = FactoryBot.create(:host)
-    assert_empty host.cves
-    @instance.create host, oval_data
-    refute_empty host.cves
-
-    assert_equal host.cves, ForemanOpenscap::Cve.where(:ref_id => @fxs.ids_from(@fxs.res_two))
+    assert_equal 1, ForemanOpenscap::Cve.where(:ref_id => 'CVE-2020-2226').count
   end
 
   test "should update host with a new set of CVEs" do

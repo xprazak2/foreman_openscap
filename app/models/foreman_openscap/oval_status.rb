@@ -32,7 +32,7 @@ module ForemanOpenscap
     end
 
     def to_status(options = {})
-      host.cves.any? ? VULNERABLE : PATCHED
+      host.oval_definitions.without_fix.any? ? VULNERABLE : PATCHED
     end
   end
 end

@@ -27,4 +27,8 @@ FactoryBot.define do
     sequence(:ref_id) { |n| "CVE-#{n}" }
     sequence(:ref_url) { |n| "https://access.redhat.com/security/cve/CVE-#{n}" }
   end
+
+  factory :oval_definition, :class => ForemanOpenscap::OvalDefinition do
+    sequence(:definition_id) { |n| "oval:com.redhat.rhsa:def:2020#{n}" }
+  end
 end

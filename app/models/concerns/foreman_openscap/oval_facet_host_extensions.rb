@@ -7,8 +7,10 @@ module ForemanOpenscap
     included do
       has_many :oval_policies, :through => :oval_facet, :class_name => 'ForemanOpenscap::OvalPolicy'
 
-      has_many :host_cves, :class_name => 'ForemanOpenscap::HostCve', :foreign_key => :host_id
-      has_many :cves, :through => :host_cves, :class_name => 'ForemanOpenscap::Cve', :source => :cve
+      has_many :host_oval_definitions, :class_name => 'ForemanOpenscap::HostOvalDefinition', :foreign_key => :host_id
+      has_many :oval_definitions, :through => :host_oval_definitions, :class_name => 'ForemanOpenscap::OvalDefinition', :source => :oval_definition
+
+      has_many :cves, :through => :oval_definitions, :class_name => 'ForemanOpenscap::Cve', :source => :cves
     end
 
     def combined_oval_policies
