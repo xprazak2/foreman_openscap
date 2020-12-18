@@ -6,6 +6,8 @@ module Api::V2
 
       before_action :find_resource, :except => %w[index create]
 
+      skip_after_action :log_response_body, :only => %w[list check]
+
       api :GET, '/compliance/content_streams', N_('List Content Streams')
       param_group :search_and_pagination, ::Api::V2::BaseController
 

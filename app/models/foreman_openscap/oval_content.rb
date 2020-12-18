@@ -5,6 +5,8 @@ module ForemanOpenscap
     include Taxonomix
     include ScapFileContent
 
+    attr_accessor :src
+
     scoped_search :on => :name, :complete_value => true
 
     has_many :oval_policies

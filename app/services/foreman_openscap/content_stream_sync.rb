@@ -25,7 +25,7 @@ module ForemanOpenscap
       existing.reduce(:update => [], :skip => []) do |memo, content|
         item = items.find { |hash| hash[:filename] == content.original_filename }
         if content.changed_at < item[:changed_at]
-          content.changed_at = item[:changed_at]
+          content.assign_attributes(:changed_at => item[:changed_at], :src => item[:src])
           memo[:update] << content
         else
           memo[:skip] << content
@@ -44,14 +44,9 @@ module ForemanOpenscap
     end
 
     def apply_changes(content, stream, status)
-      url = content_link stream.url, content.original_filename
-      content_blob = fetch_content_blob url
-      return to_result content, :error, "Failed to fetch content from #{url}" unless content_blob
+      content_blob = fetch_content_blob content.src
+      return to_result content, :error, "Failed to fetch content from #{content.src}" unless content_blob
       handle_save content, status, :scap_file => content_blob
-    end
-
-    def content_link(base_url, content_name)
-      [base_url, content_name].join('/')
     end
 
     def to_result(resource, status, error_msg = nil)
@@ -78,7 +73,13 @@ module ForemanOpenscap
     def fetch_content_list(url)
       response = fetch url
       return { :error => "Failed to reach a Content Stream with url #{url}" } unless response.code == 200
-      parse_links response.body
+
+      begin
+        hash = JSON.parse(response.body)
+      rescue JSON::ParserError => e
+        return { :error => "Failed to parse feed.json in a Content Stream with url #{url}" }
+      end
+      parse_items hash
     end
 
     def fetch_content_blob(url)
@@ -91,25 +92,22 @@ module ForemanOpenscap
       RestClient.get(url)
     end
 
-    def parse_links(html)
-      items = html.scan entry_regex
-      items.map do |item|
-        begin
-          { :filename => item.first, :changed_at => DateTime.parse(item.last) }
-        rescue ArgumentError => e
-          nil
-        end
-      end.compact
+    def parse_items(hash)
+      (hash.dig('feed', 'entry') || []).map { |entry| parse_item entry }.compact
+    end
+
+    def parse_item(item)
+      begin
+        { :filename => item['id'], :changed_at => DateTime.parse(item['updated']), :src => item.dig('content', 'src') }
+      rescue ArgumentError => e
+        nil
+      end
     end
 
     private
 
     def new_content(item, stream_id)
-      OvalContent.new(:name => item[:filename], :original_filename => item[:filename], :content_stream_id => stream_id, :changed_at => item[:changed_at])
-    end
-
-    def entry_regex
-      %r[<td><a href="(\S+)">.+</a></td><td\s*\S+>(\d{2}-\w{3}-\w{4}\s\d{2}:\d{2})\s*</td>]
+      OvalContent.new(:name => item[:filename], :original_filename => item[:filename], :content_stream_id => stream_id, :changed_at => item[:changed_at], :src => item[:src])
     end
   end
 end

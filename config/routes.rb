@@ -111,7 +111,7 @@ Rails.application.routes.draw do
           member do
             post 'sync'
             get 'list'
-            post 'check'
+            get 'check'
           end
         end
       end
