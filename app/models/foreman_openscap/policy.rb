@@ -36,7 +36,7 @@ module ForemanOpenscap
     validates :scap_content_id, presence: true, if: Proc.new { |policy| policy.should_validate?('SCAP Content') }
     validate :matching_content_profile, if: Proc.new { |policy| policy.should_validate?('SCAP Content') }
 
-    validate :valid_cron_line, :valid_weekday, :valid_day_of_month, :valid_tailoring, :valid_tailoring_profile, :no_mixed_deployments
+    validate :valid_cron_line, :valid_weekday, :valid_day_of_month, :valid_tailoring, :valid_tailoring_profile, :no_mixed_deployments, :treshold_value
     after_save :assign_policy_to_hostgroups
     # before_destroy - ensure that the policy has no hostgroups, or classes
 
@@ -333,6 +333,12 @@ module ForemanOpenscap
         unless assetable.policies.where.not(:id => id).pluck(:deploy_by).all? { |deployed_by| deployed_by == deploy_by }
           errors.add(:base, _("cannot assign to %s, all assigned policies must be deployed in the same way, check 'deploy by' for each assigned policy") % assetable.name)
         end
+      end
+    end
+
+    def treshold_value
+      if (100 < treshold || treshold < 0) && should_validate?('Policy Attributes')
+        errors.add(:treshold, _("must be between 0 and 100"))
       end
     end
   end
