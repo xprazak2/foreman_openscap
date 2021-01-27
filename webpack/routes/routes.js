@@ -8,7 +8,7 @@ export default [
   {
     path: ovalContentsPath,
     render: props => <OvalContentsIndex {...props} />,
-    exact: true
+    exact: true,
   },
   {
     path: ovalPoliciesPath,
