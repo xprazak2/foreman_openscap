@@ -209,6 +209,8 @@ module ForemanOpenscap
                         :description => proxy_description,
                         :api_description => N_('ID of OpenSCAP Proxy')
 
+        register_global_js_file 'global'
+
         add_controller_action_scope('Api::V2::HostsController', :index) do |base_scope|
           base_scope.preload(:policies)
         end
