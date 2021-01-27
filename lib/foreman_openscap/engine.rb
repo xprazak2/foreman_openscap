@@ -9,6 +9,7 @@ module ForemanOpenscap
     config.autoload_paths += Dir["#{config.root}/app/helpers/concerns"]
     config.autoload_paths += Dir["#{config.root}/app/models/concerns"]
     config.autoload_paths += Dir["#{config.root}/app/models"]
+    config.autoload_paths += Dir["#{config.root}/app/graphql"]
     config.autoload_paths += Dir["#{config.root}/app/lib"]
     config.autoload_paths += Dir["#{config.root}/app/services"]
     config.autoload_paths += Dir["#{config.root}/lib"]
@@ -167,6 +168,10 @@ module ForemanOpenscap
         menu :top_menu, :compliance_files, :caption => N_('Tailoring Files'),
                                            :url_hash => { :controller => :tailoring_files, :action => :index },
                                            :parent => :hosts_menu
+        menu :labs_menu, :oval_policies, :caption => N_('OVAL Policies'),
+                                         :url_hash => { :controller => 'react', :action => 'index' },
+                                         :url => '/experimental/compliance/oval_policies',
+                                         :parent => :lab_features_menu
 
         # add dashboard widget
         widget 'compliance_host_reports_widget',
@@ -198,6 +203,10 @@ module ForemanOpenscap
                         :label => N_('OpenSCAP Proxy'),
                         :description => proxy_description,
                         :api_description => N_('ID of OpenSCAP Proxy')
+
+        register_global_js_file 'global'
+
+        register_graphql_query_field :oval_policies, '::Types::OvalPolicy', :collection_field
 
         add_controller_action_scope('Api::V2::HostsController', :index) do |base_scope|
           base_scope.preload(:policies)
