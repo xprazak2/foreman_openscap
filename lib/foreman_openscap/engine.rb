@@ -9,6 +9,7 @@ module ForemanOpenscap
     config.autoload_paths += Dir["#{config.root}/app/helpers/concerns"]
     config.autoload_paths += Dir["#{config.root}/app/models/concerns"]
     config.autoload_paths += Dir["#{config.root}/app/models"]
+    config.autoload_paths += Dir["#{config.root}/app/graphql"]
     config.autoload_paths += Dir["#{config.root}/app/lib"]
     config.autoload_paths += Dir["#{config.root}/app/services"]
     config.autoload_paths += Dir["#{config.root}/lib"]
@@ -210,6 +211,9 @@ module ForemanOpenscap
                         :api_description => N_('ID of OpenSCAP Proxy')
 
         register_global_js_file 'global'
+
+        register_graphql_query_field :oval_policy, '::Types::OvalPolicy', :record_field
+        register_graphql_query_field :oval_policies, '::Types::OvalPolicy', :collection_field
 
         add_controller_action_scope('Api::V2::HostsController', :index) do |base_scope|
           base_scope.preload(:policies)

@@ -36,5 +36,9 @@
     "stylelint-config-standard": "^18.0.0",
     "jest-svg-transformer": "^1.0.0",
     "stylelint": "^9.3.0"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.3.7",
+    "graphql": "^15.5.0"
   }
 }
