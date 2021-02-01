@@ -51,13 +51,22 @@ module ForemanOpenscap
              ON reports.id = latest.id")
     }
 
-    scope :failed, lambda { where("(#{report_status_column} >> #{bit_mask 'failed'}) > 0") }
-    scope :not_failed, lambda { where("(#{report_status_column} >> #{bit_mask 'failed'}) = 0") }
+    scope :without_score, lambda { where.not(:id => with_score) }
 
-    scope :othered, lambda { where("(#{report_status_column} >> #{bit_mask 'othered'}) > 0").merge(not_failed) }
-    scope :not_othered, lambda { where("(#{report_status_column} >> #{bit_mask 'othered'}) = 0") }
+    scope :failed_without_score, lambda { without_score.where("(#{report_status_column} >> #{bit_mask 'failed'}) > 0") }
+    scope :not_failed_without_score, lambda { without_score.where("(#{report_status_column} >> #{bit_mask 'failed'}) = 0") }
 
-    scope :passed, lambda { where("(#{report_status_column} >> #{bit_mask 'passed'}) > 0").merge(not_failed).merge(not_othered) }
+    scope :othered_without_score, lambda { without_score.where("(#{report_status_column} >> #{bit_mask 'othered'}) > 0").merge(not_failed) }
+    scope :not_othered_without_score, lambda { without_score.where("(#{report_status_column} >> #{bit_mask 'othered'}) = 0") }
+
+    scope :passed_without_score, lambda { without_score.where("(#{report_status_column} >> #{bit_mask 'passed'}) > 0").merge(not_failed).merge(not_othered) }
+
+    scope :with_score, lambda { where.not(:score => nil) }
+    scope :passed_treshold, lambda { with_score.includes(:policy).where('foreman_openscap_policies.treshold >= reports.score') }
+    scope :failed_treshold, lambda { with_score.includes(:policy).where.not(:id => passed_treshold) }
+
+    scope :failed, lambda { where("reports.id IN ((#{failed_without_score.select(:id).to_sql}) UNION (#{failed_treshold.select(:id).to_sql}))") }
+    scope :passed, lambda { where("reports.id IN ((#{passed_without_score.select(:id).to_sql}) UNION (#{passed_treshold.select(:id).to_sql}))") }
 
     scope :by_rule_result, lambda { |rule_name, rule_result| joins(:sources).where(:sources => { :value => rule_name }, :logs => { :result => rule_result }) }
 
@@ -114,6 +123,7 @@ module ForemanOpenscap
                                       :reported_at => Time.at(params[:date].to_i),
                                       :status => params[:metrics],
                                       :metrics => params[:metrics],
+                                      :score => params[:score],
                                       :openscap_proxy => proxy)
         return arf_report unless arf_report.persisted?
         PolicyArfReport.where(:arf_report_id => arf_report.id, :policy_id => policy.id, :digest => params[:digest]).first_or_create!
@@ -162,15 +172,15 @@ module ForemanOpenscap
     end
 
     def failed?
-      failed > 0
+      score.present? ? !passed? : failed > 0
     end
 
     def passed?
-      passed > 0 && failed == 0 && othered == 0
+      score.present? ? score >= policy.treshold : passed > 0 && failed == 0 && othered == 0
     end
 
     def othered?
-      !passed? && !failed?
+      score.present? ? false : !passed? && !failed?
     end
 
     def to_html
