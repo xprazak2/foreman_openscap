@@ -1,26 +1,42 @@
 import React from 'react';
 
 import PageLayout from 'foremanReact/routes/common/PageLayout/PageLayout';
+import Head from 'foremanReact/components/Head';
 
-import { getControllerSearchProps } from 'foremanReact/constants';
+import { Grid, GridItem, TextContent, Text, TextVariants } from '@patternfly/react-core';
 
-const searchProps = getControllerSearchProps('oval_policies');
+// import { getControllerSearchProps } from 'foremanReact/constants';
+// const searchProps = getControllerSearchProps('oval_policies');
+
+import OvalPoliciesTable from './components/OvalPoliciesTable';
 
 const OvalPoliciesIndex = props => {
-  const isLoading = false;
+
+  const policies = [
+    {
+      id: 1,
+      name: 'foo',
+    },
+    {
+      id: 2,
+      name: 'far',
+    }
+  ];
 
   return (
-    <PageLayout
-      header={__('OVAL Policies')}
-      searchable={!isLoading}
-      isLoading={isLoading}
-      onSearch={() => {}}
-      searchProps={searchProps}
-      onBookmarkClick={() => {}}
-      toastNotifications={[]}
-    >
-      <div>I am poolicies</div>
-    </PageLayout>
+    <React.Fragment>
+      <Head><title>{__('OVAL Policies')}</title></Head>
+      <Grid>
+        <GridItem span={12}>
+          <TextContent>
+            <Text component={TextVariants.h1}>{__('OVAL Policies')}</Text>
+          </TextContent>
+        </GridItem>
+        <GridItem span={12}>
+          <OvalPoliciesTable policies={policies} />
+        </GridItem>
+      </Grid>
+    </React.Fragment>
   )
 }
 

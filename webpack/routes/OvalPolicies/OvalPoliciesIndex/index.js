@@ -2,29 +2,29 @@ import React from 'react';
 
 import OvalPoliciesIndex from './OvalPoliciesIndex.js'
 
-import { useQuery, gql } from '@apollo/client';
+// import { useQuery, gql } from '@apollo/client';
 
-import policiesQuery from './ovalPolicies.gql';
+// import policiesQuery from './ovalPolicies.gql';
 
-const query = gql`
-  query {
-    ovalPolicies {
-      edges {
-        node {
-          id
-          name
-        }
-      }
-    }
-  }
-`
+// const query = gql`
+//   query {
+//     ovalPolicies {
+//       edges {
+//         node {
+//           id
+//           name
+//         }
+//       }
+//     }
+//   }
+// `
 
 const WrappedOvalPoliciesIndex = props => {
-  const { loading, error, data } = useQuery(policiesQuery);
+  // const { loading, error, data } = useQuery(policiesQuery);
 
-  if (!loading) {
-    console.log(data);
-  }
+  // if (!loading) {
+  //   console.log(data);
+  // }
 
   return (
     <OvalPoliciesIndex {...props} />
