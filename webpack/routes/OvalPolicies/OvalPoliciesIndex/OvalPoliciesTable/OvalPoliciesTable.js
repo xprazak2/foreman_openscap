@@ -1,26 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { translate as __ } from 'foremanReact/common/I18n';
-
 
 import { Table, TableHeader, TableBody } from '@patternfly/react-table';
 import { Pagination, Flex, FlexItem } from '@patternfly/react-core';
 
-
 const OvalPoliciesTable = props => {
   const columns = [__('Name')];
   const rows = props.policies.map(policy => [policy.name])
+
+  const [perPage, setPerPage] = useState(props.pagination.perPage);
+  const [page, setPage] = useState(props.pagination.page);
+
+  const handlePerPageSelected = (event, perPage) => {
+    setPerPage(perPage);
+    props.fetchPolicies({ page, perPage });
+  }
 
   return (
     <React.Fragment>
       <Flex>
         <FlexItem align={{ default: 'alignRight' }}>
           <Pagination
-            itemCount={99}
-            page={1}
-            perPage={96}
-            onSetPage={(event, updated) => {}}
-            onPerPageSelect={(event, updated) => {}}
-            perPageOptions={[]}
+            itemCount={props.totalCount}
+            page={page}
+            perPage={perPage}
+            onSetPage={(event, pageSelected) => { }}
+            onPerPageSelect={handlePerPageSelected}
+            perPageOptions={props.perPageOptions}
             variant="top"
           />
         </FlexItem>

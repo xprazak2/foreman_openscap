@@ -1,5 +1,6 @@
-query {
-  ovalPolicies {
+query($pagination: PaginationInput) {
+  ovalPolicies(pagination: $pagination) {
+    recordsCount
     nodes {
       id
       name

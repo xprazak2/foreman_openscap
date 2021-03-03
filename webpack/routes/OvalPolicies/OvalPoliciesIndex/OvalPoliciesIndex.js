@@ -5,24 +5,10 @@ import Head from 'foremanReact/components/Head';
 
 import { Grid, GridItem, TextContent, Text, TextVariants } from '@patternfly/react-core';
 
-// import { getControllerSearchProps } from 'foremanReact/constants';
-// const searchProps = getControllerSearchProps('oval_policies');
-
 import OvalPoliciesTable from './OvalPoliciesTable';
 
 const OvalPoliciesIndex = props => {
   console.log(props);
-
-  // const policies = [
-  //   {
-  //     id: 1,
-  //     name: 'foo',
-  //   },
-  //   {
-  //     id: 2,
-  //     name: 'far',
-  //   }
-  // ];
 
   return (
     <React.Fragment>
@@ -34,7 +20,7 @@ const OvalPoliciesIndex = props => {
           </TextContent>
         </GridItem>
         <GridItem span={12}>
-          <OvalPoliciesTable />
+          <OvalPoliciesTable {...props} />
         </GridItem>
       </Grid>
     </React.Fragment>
