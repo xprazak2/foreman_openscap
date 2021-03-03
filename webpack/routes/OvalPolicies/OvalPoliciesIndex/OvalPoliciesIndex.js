@@ -8,20 +8,21 @@ import { Grid, GridItem, TextContent, Text, TextVariants } from '@patternfly/rea
 // import { getControllerSearchProps } from 'foremanReact/constants';
 // const searchProps = getControllerSearchProps('oval_policies');
 
-import OvalPoliciesTable from './components/OvalPoliciesTable';
+import OvalPoliciesTable from './OvalPoliciesTable';
 
 const OvalPoliciesIndex = props => {
+  console.log(props);
 
-  const policies = [
-    {
-      id: 1,
-      name: 'foo',
-    },
-    {
-      id: 2,
-      name: 'far',
-    }
-  ];
+  // const policies = [
+  //   {
+  //     id: 1,
+  //     name: 'foo',
+  //   },
+  //   {
+  //     id: 2,
+  //     name: 'far',
+  //   }
+  // ];
 
   return (
     <React.Fragment>
@@ -33,7 +34,7 @@ const OvalPoliciesIndex = props => {
           </TextContent>
         </GridItem>
         <GridItem span={12}>
-          <OvalPoliciesTable policies={policies} />
+          <OvalPoliciesTable />
         </GridItem>
       </Grid>
     </React.Fragment>
