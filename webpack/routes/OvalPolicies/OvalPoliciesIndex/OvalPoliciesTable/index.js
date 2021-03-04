@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import queryString from 'query-string';
 
-import { push } from 'connected-react-router'
+// import { push } from 'connected-react-router'
 
 import { useQuery, gql } from '@apollo/client';
 
@@ -16,22 +16,29 @@ import OvalPoliciesTable from './OvalPoliciesTable';
 
 const WrappedOvalPoliciesTable = props => {
   console.log(props)
-  const fetchPolicies = (pagination) => useQuery(policiesQuery, { variables: { pagination }});
 
-  const queryVars = (params, defaults) => ({ page: params.page || defaults.page, perPage: params.perPage || defaults.perPage })
+  const fetchPolicies = (pagination) => useQuery(policiesQuery, { variables: { pagination }});
 
   const refreshPage = (params = {}) => {
     let stringyfied = '';
-    if (params.length > 0) {
+    if (Object.keys(params).length > 0) {
       stringyfied = `?${queryString.stringify(params)}`
     }
-    push(`/compliance/oval_policies${stringyfied}`);
+
+    const url = `/compliance/oval_policies${stringyfied}`
+    props.history.push(url);
   }
 
   const uiSettings = useForemanSettings();
-  const pagination = { page: 1, perPage: uiSettings.perPage }
 
-  const { loading, error, data } = fetchPolicies(queryVars(props.match.params, pagination));
+  const pageParams = queryString.parse(props.history.location.search);
+  // console.log('page params', pageParams)
+
+  const pagination = { page: parseInt(pageParams.page) || 1, perPage: parseInt(pageParams.perPage) || uiSettings.perPage }
+
+  // console.log('pagination', pagination);
+
+  const { loading, error, data } = fetchPolicies(pagination);
 
   const perPageOptions = usePaginationOptions().map(item => ({ title: item.toString(), value: item }));
 
@@ -51,7 +58,7 @@ const WrappedOvalPoliciesTable = props => {
       perPageOptions={perPageOptions}
       pagination={pagination}
       totalCount={data.ovalPolicies.recordsCount}
-      fetchPolicies={fetchPolicies}
+      refreshPage={refreshPage}
     />
   )
 }

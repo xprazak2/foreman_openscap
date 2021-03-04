@@ -8,12 +8,12 @@ const OvalPoliciesTable = props => {
   const columns = [__('Name')];
   const rows = props.policies.map(policy => [policy.name])
 
-  const [perPage, setPerPage] = useState(props.pagination.perPage);
-  const [page, setPage] = useState(props.pagination.page);
-
   const handlePerPageSelected = (event, perPage) => {
-    setPerPage(perPage);
-    props.fetchPolicies({ page, perPage });
+    props.refreshPage({ page: 1, perPage })
+  }
+
+  const handlePageSelected = (event, page) => {
+    props.refreshPage({ ...props.pagination, page })
   }
 
   return (
@@ -22,9 +22,9 @@ const OvalPoliciesTable = props => {
         <FlexItem align={{ default: 'alignRight' }}>
           <Pagination
             itemCount={props.totalCount}
-            page={page}
-            perPage={perPage}
-            onSetPage={(event, pageSelected) => { }}
+            page={props.pagination.page}
+            perPage={props.pagination.perPage}
+            onSetPage={handlePageSelected}
             onPerPageSelect={handlePerPageSelected}
             perPageOptions={props.perPageOptions}
             variant="top"

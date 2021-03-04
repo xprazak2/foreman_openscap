@@ -6,14 +6,13 @@ import Head from 'foremanReact/components/Head';
 import { Grid, GridItem, TextContent, Text, TextVariants } from '@patternfly/react-core';
 
 import OvalPoliciesTable from './OvalPoliciesTable';
+import './OvalPoliciesIndex.scss';
 
 const OvalPoliciesIndex = props => {
-  console.log(props);
-
   return (
     <React.Fragment>
       <Head><title>{__('OVAL Policies')}</title></Head>
-      <Grid>
+      <Grid className='scap-page-grid'>
         <GridItem span={12}>
           <TextContent>
             <Text component={TextVariants.h1}>{__('OVAL Policies')}</Text>
