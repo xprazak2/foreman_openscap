@@ -1,11 +1,12 @@
-import { useQuery } from '@apollo/client';
+import React from 'react';
+import { getForemanContext } from 'foremanReact/Root/Context/ForemanContext';
 
+import { useQuery } from '@apollo/client';
 import queryString from 'query-string';
 
-import { usePaginationOptions } from 'foremanReact/components/Pagination/PaginationHooks';
-import { useForemanSettings } from 'foremanReact/Root/Context/ForemanContext';
-
 import policiesQuery from '../ovalPolicies.gql';
+
+export const useUiSettings = rootCtx => rootCtx.metadata.UISetting;
 
 export const refreshPage = history => (params = {}) => {
   let stringyfied = '';
@@ -17,7 +18,7 @@ export const refreshPage = history => (params = {}) => {
   history.push(url);
 }
 
-export const fetchPolicies = (variables) => useQuery(policiesQuery, { variables });
+export const fetchPolicies = (variables) => useQuery(policiesQuery, { variables: { first: 20, last: 20 } });
 
 export const pageToVars = pagination => ({
   first: pagination.page * pagination.perPage,
@@ -26,8 +27,7 @@ export const pageToVars = pagination => ({
 
 export const parsePageParams = history => queryString.parse(history.location.search);
 
-export const currentPagination = history => {
-  const uiSettings = useForemanSettings();
+export const currentPagination = (uiSettings, history) => {
   const pageParams = parsePageParams(history);
 
   return ({
@@ -36,4 +36,4 @@ export const currentPagination = history => {
   })
 }
 
-export const preparePerPageOptions = () => usePaginationOptions().map(item => ({ title: item.toString(), value: item }));
+export const preparePerPageOptions = (opts) => opts.map(item => ({ title: item.toString(), value: item }));

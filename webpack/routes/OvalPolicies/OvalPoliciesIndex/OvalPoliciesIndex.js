@@ -1,7 +1,5 @@
 import React from 'react';
-
-import PageLayout from 'foremanReact/routes/common/PageLayout/PageLayout';
-import Head from 'foremanReact/components/Head';
+import { Helmet } from 'react-helmet';
 
 import { Grid, GridItem, TextContent, Text, TextVariants } from '@patternfly/react-core';
 
@@ -11,7 +9,7 @@ import './OvalPoliciesIndex.scss';
 const OvalPoliciesIndex = props => {
   return (
     <React.Fragment>
-      <Head><title>{__('OVAL Policies')}</title></Head>
+      <Helmet><title>{__('OVAL Policies')}</title></Helmet>
       <Grid className='scap-page-grid'>
         <GridItem span={12}>
           <TextContent>

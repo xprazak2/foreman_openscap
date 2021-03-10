@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { translate as __ } from 'foremanReact/common/I18n';
+import { usePaginationOptions } from 'foremanReact/components/Pagination/PaginationHooks';
 
 import { Table, TableHeader, TableBody } from '@patternfly/react-table';
 import { Pagination, Flex, FlexItem } from '@patternfly/react-core';
@@ -28,7 +29,7 @@ const OvalPoliciesTable = props => {
             perPage={props.pagination.perPage}
             onSetPage={handlePageSelected}
             onPerPageSelect={handlePerPageSelected}
-            perPageOptions={preparePerPageOptions()}
+            perPageOptions={preparePerPageOptions(usePaginationOptions())}
             variant="top"
           />
         </FlexItem>
