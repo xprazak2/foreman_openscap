@@ -17,7 +17,12 @@ export const refreshPage = history => (params = {}) => {
   history.push(url);
 }
 
-export const fetchPolicies = (pagination) => useQuery(policiesQuery, { variables: { pagination }});
+export const fetchPolicies = (variables) => useQuery(policiesQuery, { variables });
+
+export const pageToVars = pagination => ({
+  first: pagination.page * pagination.perPage,
+  last: pagination.perPage
+});
 
 export const parsePageParams = history => queryString.parse(history.location.search);
 

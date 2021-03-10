@@ -6,7 +6,7 @@ import Loading from '../../../../components/Loading';
 import EmptyState from '../../../../components/EmptyState';
 
 import OvalPoliciesTable from './OvalPoliciesTable';
-import { refreshPage, fetchPolicies, currentPagination } from './OvalPoliciesTableHelpers';
+import { refreshPage, fetchPolicies, currentPagination, pageToVars } from './OvalPoliciesTableHelpers';
 
 const emptyStateTitle = __("You currently don't have any OVAL Policies.");
 const errorStateTitle = __('Error!');
@@ -14,8 +14,9 @@ const emptyStateBody = "";
 
 const WrappedOvalPoliciesTable = props => {
   const pagination = currentPagination(props.history)
+  console.log(pagination)
 
-  const { loading, error, data } = fetchPolicies(pagination);
+  const { loading, error, data } = fetchPolicies(pageToVars(pagination));
 
   if (loading) {
     return <Loading />
@@ -33,7 +34,7 @@ const WrappedOvalPoliciesTable = props => {
     <OvalPoliciesTable
       policies={data.ovalPolicies.nodes}
       pagination={pagination}
-      totalCount={data.ovalPolicies.recordsCount}
+      totalCount={data.ovalPolicies.totalCount}
       refreshPage={refreshPage(props.history)}
     />
   )

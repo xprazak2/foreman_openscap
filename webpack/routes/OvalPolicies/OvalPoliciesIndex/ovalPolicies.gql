@@ -1,6 +1,6 @@
-query($pagination: PaginationInput) {
-  ovalPolicies(pagination: $pagination) {
-    recordsCount
+query($first: Int, $last: Int) {
+  ovalPolicies(first: $first, last: $last) {
+    totalCount
     nodes {
       id
       name
