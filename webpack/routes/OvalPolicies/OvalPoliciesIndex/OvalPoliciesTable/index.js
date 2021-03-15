@@ -14,14 +14,10 @@ const emptyStateTitle = __("You currently don't have any OVAL Policies.");
 const errorStateTitle = __('Error!');
 const emptyStateBody = "";
 
-// const uiSettings = useUiSettings(React.useContext(getForemanContext()));
-
 const WrappedOvalPoliciesTable = props => {
   const uiSettings = useForemanSettings();
 
   const pagination = currentPagination(uiSettings, props.history)
-
-  console.log(pageToVars(pagination))
 
   const { loading, error, data } = fetchPolicies(pageToVars(pagination));
 
@@ -32,8 +28,6 @@ const WrappedOvalPoliciesTable = props => {
   if (error) {
     return <EmptyState error={error} title={errorStateTitle} body={error.message} />
   }
-
-  console.log('data', data)
 
   if (data.ovalPolicies.nodes.length === 0) {
     return <EmptyState title={emptyStateTitle} body={emptyStateBody} />

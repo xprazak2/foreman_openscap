@@ -1,7 +1,7 @@
 import React from 'react';
 import { getForemanContext } from 'foremanReact/Root/Context/ForemanContext';
 
-import { useQuery } from '@apollo/client';
+import { useQuery, gql } from '@apollo/client';
 import queryString from 'query-string';
 
 import policiesQuery from '../ovalPolicies.gql';
@@ -18,7 +18,7 @@ export const refreshPage = history => (params = {}) => {
   history.push(url);
 }
 
-export const fetchPolicies = (variables) => useQuery(policiesQuery, { variables: { first: 20, last: 20 } });
+export const fetchPolicies = (variables) => useQuery(policiesQuery, { variables });
 
 export const pageToVars = pagination => ({
   first: pagination.page * pagination.perPage,
