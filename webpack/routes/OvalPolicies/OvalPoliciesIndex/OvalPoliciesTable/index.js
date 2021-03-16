@@ -39,6 +39,7 @@ const WrappedOvalPoliciesTable = props => {
       pagination={pagination}
       totalCount={data.ovalPolicies.totalCount}
       refreshPage={refreshPage(props.history)}
+      toggleModal={props.toggleModal}
     />
   )
 }
