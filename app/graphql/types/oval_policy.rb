@@ -12,6 +12,13 @@ module Types
     field :day_of_month, String
     field :cron_line, String
     belongs_to :oval_content, ::Types::OvalContent
+    field :meta, ::Types::Meta, resolve: (proc do |object|
+      {
+        :can_edit => ::User.current.can?(object.permission_name(:edit), object),
+        :can_destroy => ::User.current.can?(object.permission_name(:destroy), object)
+      }
+    end)
+
     has_many :hostgroups, ::Types::Hostgroup
 
     def self.graphql_definition
