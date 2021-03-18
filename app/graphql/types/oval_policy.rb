@@ -11,5 +11,9 @@ module Types
     field :weekday, String
     field :day_of_month, String
     field :cron_line, String
+
+    def self.graphql_definition
+      super.tap { |type| type.instance_variable_set(:@name, 'ForemanOpenscap::OvalPolicy') }
+    end
   end
 end
