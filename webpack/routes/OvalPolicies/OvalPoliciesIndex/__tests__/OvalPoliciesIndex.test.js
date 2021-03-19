@@ -1,23 +1,13 @@
 import React from 'react';
-import { act } from 'react-dom/test-utils';
-import { MockedProvider } from '@apollo/react-testing';
 // TODO: use @testing-library/user-event for better events
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { within } from '@testing-library/dom'
 import '@testing-library/jest-dom';
 
-import { getForemanContext } from 'foremanReact/Root/Context/ForemanContext';
+import OvalPoliciesIndex from '../OvalPoliciesIndex';
+import policiesQuery from '../../../../graphql/queries/ovalPolicies.gql';
 
-import OvalPoliciesIndex from './index';
-import policiesQuery from './ovalPolicies.gql';
-
-const ctx = {
-  metadata: {
-    UISettings: {
-      perPage: 20
-    }
-  }
-};
+import { withRedux, withMockedProvider, tick } from '../../../../testHelper';
 
 const mocks = [
   {
@@ -80,25 +70,12 @@ const pageParamsHistoryMock = {
   push: pushMock
 }
 
-const TestReactApp = (props) => {
-  const ForemanContext = getForemanContext(ctx);
-  const { mocks, ...rest } = props;
-
-  return (
-    <ForemanContext.Provider value={ctx}>
-      <MockedProvider mocks={mocks} addTypename={false} >
-        <OvalPoliciesIndex {...rest} />
-      </MockedProvider>
-    </ForemanContext.Provider>
-  )
-}
-
-const tick = () => new Promise(resolve => setTimeout(resolve, 0));
+const TestComponent = withRedux(withMockedProvider(OvalPoliciesIndex));
 
 describe('OvalPoliciesIndex', () => {
   it('should load page', async () => {
     const { container } = render(
-      <TestReactApp history={historyMock} mocks={mocks} />
+      <TestComponent history={historyMock} mocks={mocks} />
     );
     expect(screen.getByText('Loading')).toBeInTheDocument();
     await waitFor(tick);
@@ -113,7 +90,7 @@ describe('OvalPoliciesIndex', () => {
 
   it('should load page with page params', async () => {
     const { container } = render(
-      <TestReactApp history={pageParamsHistoryMock} mocks={pageParamsMocks} />
+      <TestComponent history={pageParamsHistoryMock} mocks={pageParamsMocks} />
     )
     await waitFor(tick);
     const pageItems = container.querySelector('.pf-c-pagination__total-items');
