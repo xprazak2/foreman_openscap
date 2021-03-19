@@ -1,10 +1,11 @@
 import React from 'react';
 import { getForemanContext } from 'foremanReact/Root/Context/ForemanContext';
+import { useForemanSettings } from 'foremanReact/Root/Context/ForemanContext';
 
 import { useQuery, gql } from '@apollo/client';
 import queryString from 'query-string';
 
-import policiesQuery from '../ovalPolicies.gql';
+import policiesQuery from '../../../../graphql/queries/ovalPolicies.gql';
 
 export const useUiSettings = rootCtx => rootCtx.metadata.UISetting;
 
@@ -27,8 +28,9 @@ export const pageToVars = pagination => ({
 
 export const parsePageParams = history => queryString.parse(history.location.search);
 
-export const currentPagination = (uiSettings, history) => {
+export const currentPagination = (history) => {
   const pageParams = parsePageParams(history);
+  const uiSettings = useForemanSettings();
 
   return ({
     page: parseInt(pageParams.page) || 1,

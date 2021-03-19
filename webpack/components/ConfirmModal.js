@@ -7,13 +7,15 @@ import { Modal, Button, ModalVariant, Spinner } from '@patternfly/react-core';
 import './ConfirmModal.scss';
 
 const ConfirmModal = props => {
+  const [callMutation, { loading, error, data }] = props.prepareMutation();
+
   const actions = [
-    <Button key="confirm" variant="primary" onClick={props.onConfirm} disabled={props.working}>Confirm</Button>,
-    <Button key="cancel" variant="link" onClick={props.onClose} disabled={props.working}>Cancel</Button>
+    <Button key="confirm" variant="primary" onClick={() => props.onConfirm(callMutation, props.record.id)} disabled={loading}>Confirm</Button>,
+    <Button key="cancel" variant="link" onClick={(event) => props.onClose()} disabled={loading}>Cancel</Button>
   ]
 
-  if (props.working) {
-    actions.push(<Spinner isSVG size="lg" />)
+  if (loading) {
+    actions.push(<Spinner key="spinner" size="lg" />)
   }
 
   return (
@@ -21,7 +23,6 @@ const ConfirmModal = props => {
       variant={ModalVariant.medium}
       title={props.title}
       isOpen={props.isOpen}
-      onClose={props.onClose}
       className='foreman-modal'
       working={props.working}
       showClose={false}

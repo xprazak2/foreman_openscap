@@ -7,12 +7,6 @@ import { Pagination, Flex, FlexItem } from '@patternfly/react-core';
 
 import { preparePerPageOptions } from './OvalPoliciesTableHelpers';
 
-// const nameTranform = (value, data) => {
-//   console.log(value)
-//   console.log(data)
-//   return value.name;
-// }
-
 const OvalPoliciesTable = props => {
   const columns = [
     { title: __('Name') }
@@ -23,9 +17,7 @@ const OvalPoliciesTable = props => {
     {
       title: __('Delete OVAL policy'),
       onClick: (event, rowId, rowData, extra) => {
-
         props.toggleModal(rowData[0].policy);
-        console.log('Action clicked:   ', rowData, extra)
       }
     }
   ];

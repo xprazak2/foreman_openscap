@@ -15,9 +15,7 @@ const errorStateTitle = __('Error!');
 const emptyStateBody = "";
 
 const WrappedOvalPoliciesTable = props => {
-  const uiSettings = useForemanSettings();
-
-  const pagination = currentPagination(uiSettings, props.history)
+  const pagination = currentPagination(props.history)
 
   const { loading, error, data } = fetchPolicies(pageToVars(pagination));
 
