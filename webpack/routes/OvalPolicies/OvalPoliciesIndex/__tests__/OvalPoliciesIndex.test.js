@@ -8,29 +8,7 @@ import OvalPoliciesIndex from '../OvalPoliciesIndex';
 import policiesQuery from '../../../../graphql/queries/ovalPolicies.gql';
 
 import { withRedux, withMockedProvider, tick } from '../../../../testHelper';
-
-const mocks = [
-  {
-    request: {
-      query: policiesQuery,
-      variables: {
-        first: 20,
-        last: 20
-      }
-    },
-    result: {
-      data: {
-        ovalPolicies: {
-          totalCount: 2,
-          nodes: [
-            { id: 'abc', name: 'first policy' },
-            { id: 'xyz', name: 'second policy' }
-          ]
-        }
-      }
-    }
-  }
-]
+import { mocks, historyMock } from './OvalPoliciesIndex.fixtures';
 
 const pageParamsMocks = [
   {
@@ -55,15 +33,9 @@ const pageParamsMocks = [
   }
 ]
 
-const historyMock = {
-  location: {
-    search: ''
-  }
-}
+export const pushMock = jest.fn();
 
-const pushMock = jest.fn();
-
-const pageParamsHistoryMock = {
+export const pageParamsHistoryMock = {
   location: {
     search: '?page=2&perPage=5'
   },
