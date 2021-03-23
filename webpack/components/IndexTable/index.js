@@ -50,7 +50,7 @@ const IndexTable = props => {
 IndexTable.propTypes = {
   history: PropTypes.object.isRequired,
   pagination: PropTypes.object.isRequired,
-  toolbarBtns: PropTypes.array,
+  toolbarBtns: PropTypes.node,
   totalCount: PropTypes.number.isRequired,
   ariaTableLabel: PropTypes.string.isRequired,
   columns: PropTypes.array.isRequired,
@@ -59,7 +59,7 @@ IndexTable.propTypes = {
 };
 
 IndexTable.defaultProps = {
-  toolbarBtns: [],
+  toolbarBtns: null,
   actions: [],
 };
 
