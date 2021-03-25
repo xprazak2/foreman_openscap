@@ -9,7 +9,7 @@ import policiesQuery from '../../../../graphql/queries/ovalPolicies.gql';
 
 export const useUiSettings = rootCtx => rootCtx.metadata.UISetting;
 
-export const refreshPage = history => (params = {}) => {
+export const refreshPage = (history, params = {}) => {
   let stringyfied = '';
   if (Object.keys(params).length > 0) {
     stringyfied = `?${queryString.stringify(params)}`

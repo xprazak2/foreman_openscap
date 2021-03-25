@@ -3,9 +3,9 @@ import { translate as __ } from 'foremanReact/common/I18n';
 import { usePaginationOptions } from 'foremanReact/components/Pagination/PaginationHooks';
 
 import { Table, TableHeader, TableBody } from '@patternfly/react-table';
-import { Pagination, Flex, FlexItem } from '@patternfly/react-core';
+import { Pagination, Flex, FlexItem, Button } from '@patternfly/react-core';
 
-import { preparePerPageOptions } from './OvalPoliciesTableHelpers';
+import { preparePerPageOptions, refreshPage } from './OvalPoliciesTableHelpers';
 
 const OvalPoliciesTable = props => {
   const columns = [
@@ -23,16 +23,21 @@ const OvalPoliciesTable = props => {
   ];
 
   const handlePerPageSelected = (event, perPage) => {
-    props.refreshPage({ page: 1, perPage })
+    refreshPage(props.history, { page: 1, perPage })
   }
 
   const handlePageSelected = (event, page) => {
-    props.refreshPage({ ...props.pagination, page })
+    refreshPage(props.history, { ...props.pagination, page })
   }
 
   return (
     <React.Fragment>
       <Flex>
+        <FlexItem>
+          <Button onClick={() => props.history.push('/compliance/oval_policies/new')} variant="primary" aria-label="create_oval_policy">
+            {__('Create OVAL Policy')}
+          </Button>
+        </FlexItem>
         <FlexItem align={{ default: 'alignRight' }}>
           <Pagination
             itemCount={props.totalCount}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 
-import { Grid, GridItem, TextContent, Text, TextVariants } from '@patternfly/react-core';
+import { Grid, GridItem, TextContent, Text, TextVariants, Flex, FlexItem, Button } from '@patternfly/react-core';
 
 import ToastsList from 'foremanReact/components/ToastsList';
 
