@@ -56,6 +56,8 @@ Rails.application.routes.draw do
     resources :hosts, :only => [:show], :as => :compliance_hosts, :controller => :compliance_hosts
 
     match 'oval_policies' => 'react#index', :via => :get
+    match 'oval_policies/new' => 'react#index', :via => :get
+
   end
 
   namespace :api, :defaults => { :format => 'json' } do
