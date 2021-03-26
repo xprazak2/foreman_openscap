@@ -212,6 +212,8 @@ module ForemanOpenscap
 
         register_global_js_file 'global'
 
+        register_graphql_query_field :oval_content, '::Types::OvalContent', :record_field
+        register_graphql_query_field :oval_contents, '::Types::OvalContent', :collection_field
         register_graphql_query_field :oval_policy, '::Types::OvalPolicy', :record_field
         register_graphql_query_field :oval_policies, '::Types::OvalPolicy', :collection_field
 

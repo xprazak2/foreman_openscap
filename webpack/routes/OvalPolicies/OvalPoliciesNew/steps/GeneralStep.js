@@ -2,6 +2,9 @@ import React from 'react'
 import { Field as FormikField } from 'formik';
 import { Form as PfForm, FormGroup, TextInput, TextArea, FormSelect, FormSelectOption } from '@patternfly/react-core';
 
+import { useQuery } from '@apollo/client';
+import ovalContentsQuery from '../../../../graphql/queries/ovalContents.gql';
+
 const OvalContentSelect = props => {
   const {ovalContents, ...rest} = props;
   return (
