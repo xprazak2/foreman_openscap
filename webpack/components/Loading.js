@@ -11,7 +11,7 @@ import {
 const Loading = ({ size, showText }) => (
   <Bullseye>
     <EmptyState>
-      <EmptyStateIcon size={size} variant="container" component={(props) => <Spinner isSVG {...props}/>} />
+      <EmptyStateIcon size={size} variant="container" component={(props) => <Spinner {...props}/>} />
       {showText && (
         <Title size={size} headingLevel="h4">
           Loading
