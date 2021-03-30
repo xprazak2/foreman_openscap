@@ -23,26 +23,31 @@ const NewOvalPolicyWizard = props => {
   }
 
   const prepareMutation = (history, showToast) => {
-    const options = {
-      onCompleted: (data) => {
-        console.log(data);
-        if (data.createOvalPolicy.errors.length === 0) {
-          history.push('/compliance/oval_policies');
-          showToast({ type: 'success', message: 'OVAL Policy succesfully created.' });
-        }
-      },
-      onError: (error) => {
-        showToast({ type: 'error', message: `Failed to create OVAL Policy: ${error}` });
-      }
-    }
-
-    return useMutation(createOvalPolicy, options);
+    return useMutation(createOvalPolicy);
   }
 
   const [callMutation, { loading, error, data }] = prepareMutation(props.history, props.showToast);
 
-  const onSubmit = (history) => (values, actions) => {
-    callMutation({ variables: { ...values, period: 'custom' } });
+  const onSubmit = (history, showToast) => (values, actions) => {
+    const onCompleted = (response) => {
+      const errors = response.data.createOvalPolicy.errors;
+      if (errors.length === 0) {
+        history.push('/compliance/oval_policies');
+        showToast({ type: 'success', message: 'OVAL Policy succesfully created.' });
+      } else {
+        console.log('Setting submitting')
+        console.log(errors);
+        actions.setSubmitting(false);
+        actions.setErrors(prepareErrors(errors));
+      }
+    }
+
+    const onError =(error) => {
+      console.log('onError')
+      showToast({ type: 'error', message: `Failed to create OVAL Policy: ${error}` });
+    }
+
+    callMutation({ variables: { ...values, period: 'custom' } }).then(onCompleted, onError);
   }
 
   const initialValues = {
@@ -60,35 +65,27 @@ const NewOvalPolicyWizard = props => {
 
   const prepareErrors = errors => {
     return errors.reduce((memo, item) => {
-      // get last
-      let key = item.path[item.path.lenght - 1];
+      let key = item.path[item.path.length - 1];
       memo[key] = item.message;
       return memo;
     }, {})
   }
 
-  console.log(data);
-
   return (
     <Formik
-      onSubmit={onSubmit(props.history)}
+      onSubmit={onSubmit(props.history, props.showToast)}
       initialValues={initialValues}
       validationSchema={validationSchema}
     >
       {formProps => {
-        console.log(formProps)
 
-        if (data) {
-          formProps.setSubmitting(false);
-          formProps.setErrors(data.createOvalPolicy.errors)
-        }
-
+        console.log(formProps);
         return (
-            <Wizard
-              steps={stepsFactory(props, { enableNext: formProps.isValid, isSubmitting: formProps.isSubmitting })}
-              onClose={() => props.history.push('/compliance/oval_policies')}
-              onSave={formProps.handleSubmit}
-            />
+          <Wizard
+            steps={stepsFactory(props, { enableNext: formProps.isValid, isSubmitting: formProps.isSubmitting })}
+            onClose={() => props.history.push('/compliance/oval_policies')}
+            onSave={formProps.handleSubmit}
+          />
         )
       }}
     </Formik>

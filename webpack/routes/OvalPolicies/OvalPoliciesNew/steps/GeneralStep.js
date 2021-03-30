@@ -57,8 +57,7 @@ const fieldWithHandlers = Component => props => {
   const { form, field } = props;
 
   const fieldProps = wrapFieldProps(field);
-
-  const valid = shouldValidate(form, field.name)
+  const valid = shouldValidate(form, field.name);
 
   return (
     <FormGroup
@@ -84,8 +83,7 @@ const GeneralStep = props => {
   }
 
   if (error) {
-    console.log(error);
-    return <div>Error</div>
+    return <div>{ error.message }</div>
   }
 
   const nameProps = {
