@@ -7,7 +7,6 @@ import { Button, Wizard, Form as PfForm } from '@patternfly/react-core';
 import EmptyState from '../../../components/EmptyState';
 import Loading from '../../../components/Loading';
 
-
 import ovalContentsQuery from '../../../graphql/queries/ovalContents.gql';
 import ovalPoliciesQuery from '../../../graphql/queries/ovalPolicies.gql';
 import createOvalPolicy from '../../../graphql/mutations/createOvalPolicy.gql';
@@ -18,6 +17,13 @@ const NewOvalPolicyWizard = props => {
   const [callMutation] = useMutation(createOvalPolicy);
 
   const [assignedHgs, setAssignedHgs] = useState([]);
+  const [stepReached, setStepReached] = useState(0);
+
+  const onNextStep = ({ id }) => {
+    if (stepReached < id) {
+      setStepReached(id);
+    }
+  }
 
   const onHgAssignChange = allHgs => (event, isSelected, rowId, rowAttrs) => {
     let newAssignedHgs;
@@ -62,11 +68,13 @@ const NewOvalPolicyWizard = props => {
             onHgAssignChange,
             assignedHgs,
             ovalContents,
-            ovalPolicies })
+            ovalPolicies,
+            stepReached })
 
         return (
           <Wizard
             steps={steps}
+            onNext={onNextStep}
             onClose={() => props.history.push('/compliance/oval_policies')}
             onSave={formProps.handleSubmit}
           />
