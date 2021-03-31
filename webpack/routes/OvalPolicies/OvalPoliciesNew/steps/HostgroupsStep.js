@@ -30,11 +30,10 @@ const HostgroupsStep = props => {
 
   const rows = createRows(data.hostgroups.nodes, props.assignedHgs);
 
-  console.log(rows)
-
   return (
     <div>
       <Table
+        aria-label='Hostgroup selection table'
         onSelect={props.onHgAssignChange(data.hostgroups.nodes)}
         canSelectAll={true}
         cells={columns}
