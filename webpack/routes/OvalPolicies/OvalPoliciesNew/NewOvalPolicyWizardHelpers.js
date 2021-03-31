@@ -19,15 +19,18 @@ export const createValidationSchema = (existingPolicies) => {
 export const stepsFactory = (props, additional) => {
   const steps = [
     {
+      id: 0,
       name: 'General',
       component: <GeneralStep {...props} ovalContents={additional.ovalContents} />,
       enableNext: additional.enableNext && !additional.isSubmitting
     },
     {
+      id: 1,
       name: 'Hostgroups',
       component: <HostgroupsStep {...props} onHgAssignChange={additional.onHgAssignChange} assignedHgs={additional.assignedHgs} />,
       enableNext: additional.enableNext && !additional.isSubmitting,
-      nextButtonText: 'Submit'
+      nextButtonText: 'Submit',
+      canJumpTo: additional.stepReached >= 1
     }
   ]
 

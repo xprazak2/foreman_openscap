@@ -1,16 +1,15 @@
 import React from 'react';
-
 import { useQuery } from '@apollo/client';
-import { Spinner, Checkbox } from '@patternfly/react-core';
 import { Table, TableHeader, TableBody, headerCol } from '@patternfly/react-table';
 
+import Loading from '../../../../components/Loading';
 import hostgroupsQuery from '../../../../graphql/queries/hostgroups.gql';
 
 const HostgroupsStep = props => {
   const { loading, data, error } = useQuery(hostgroupsQuery)
 
   if (loading) {
-    return <Spinner />
+    return <Loading />
   }
 
   if (error) {
