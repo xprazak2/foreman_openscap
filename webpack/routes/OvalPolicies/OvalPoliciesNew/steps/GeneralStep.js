@@ -3,9 +3,9 @@ import { Field as FormikField } from 'formik';
 import { Form as PfForm, FormGroup, TextInput, TextArea, FormSelect, FormSelectOption, Spinner } from '@patternfly/react-core';
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon';
 
-
 import { useQuery } from '@apollo/client';
 import ovalContentsQuery from '../../../../graphql/queries/ovalContents.gql';
+import ovalPoliciesQuery from '../../../../graphql/queries/ovalPolicies.gql';
 
 const OvalContentSelect = props => {
   const {ovalContents, field, form} = props;
@@ -76,14 +76,19 @@ const TextField = fieldWithHandlers(TextInput);
 const TextAreaField = fieldWithHandlers(TextArea);
 
 const GeneralStep = props => {
+  const policiesData = useQuery(ovalPoliciesQuery)
   const { loading, data, error } = useQuery(ovalContentsQuery);
 
-  if (loading) {
+  if (loading || policiesData.loading) {
     return <Spinner />
   }
 
   if (error) {
     return <div>{ error.message }</div>
+  }
+
+  if (policiesData.error) {
+    return <div>{ policiesData.error.message }</div>
   }
 
   const nameProps = {

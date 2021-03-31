@@ -1,32 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useMutation } from '@apollo/client';
 
 import { Button, Wizard, Form as PfForm } from '@patternfly/react-core';
 import GeneralStep from './steps/GeneralStep';
-import ScheduleStep from './steps/ScheduleStep';
-// import HostGroupsStep from './steps/HostGroupsStep';
+import HostgroupsStep from './steps/HostgroupsStep';
 
 import createOvalPolicy from '../../../graphql/mutations/createOvalPolicy.gql';
 
 const NewOvalPolicyWizard = props => {
   const stepsFactory = (props, additional) => {
     const steps = [
-      { name: 'General',
+      {
+        name: 'General',
         component: <GeneralStep {...props} />,
-        nextButtonText: 'Submit',
-        enableNext: additional.enableNext && !additional.isSubmitting }
+        enableNext: additional.enableNext && !additional.isSubmitting
+      },
+      {
+        name: 'Hostgroups',
+        component: <HostgroupsStep {...props} onHgAssignChange={additional.onHgAssignChange} assignedHgs={additional.assignedHgs} />,
+        enableNext: additional.enableNext && !additional.isSubmitting,
+        nextButtonText: 'Submit'
+      }
     ]
 
     return steps
   }
 
-  const prepareMutation = (history, showToast) => {
-    return useMutation(createOvalPolicy);
+  const [assignedHgs, setAssignedHgs] = useState([]);
+
+  const onHgAssignChange = allHgs => (event, isSelected, rowId, rowAttrs, colAttrs) => {
+    let newAssignedHgs;
+    if (rowId === -1) {
+      newAssignedHgs = isSelected ? allHgs.map(hg => hg.id) : [];
+    } else {
+      let id = rowAttrs.hostgroup.id;
+      newAssignedHgs = isSelected ? [...assignedHgs, id] : assignedHgs.filter(item => item !== id);
+    }
+    setAssignedHgs(newAssignedHgs);
   }
 
-  const [callMutation, { loading, error, data }] = prepareMutation(props.history, props.showToast);
+  const [callMutation, { loading, error, data }] = useMutation(createOvalPolicy);
 
   const onSubmit = (history, showToast) => (values, actions) => {
     const onCompleted = (response) => {
@@ -35,8 +50,6 @@ const NewOvalPolicyWizard = props => {
         history.push('/compliance/oval_policies');
         showToast({ type: 'success', message: 'OVAL Policy succesfully created.' });
       } else {
-        console.log('Setting submitting')
-        console.log(errors);
         actions.setSubmitting(false);
         actions.setErrors(prepareErrors(errors));
       }
@@ -57,11 +70,13 @@ const NewOvalPolicyWizard = props => {
     cronLine: ""
   }
 
-  const validationSchema = Yup.object().shape({
-    name: Yup.string().required("can't be blank"),
-    ovalContentId: Yup.string().required("can't be blank"),
-    cronLine: Yup.string().test('is-cron', 'is not a valid cronline', value => value && value.trim().split(' ').length === 5)
-  });
+  const createValidationSchema = (existingNames) => {
+    return Yup.object().shape({
+      name: Yup.string().required("can't be blank").test('name-is-unique', 'has already been taken', value => value && existingNames.include(value)),
+      ovalContentId: Yup.string().required("can't be blank"),
+      cronLine: Yup.string().test('is-cron', 'is not a valid cronline', value => value && value.trim().split(' ').length === 5)
+    });
+  }
 
   const prepareErrors = errors => {
     return errors.reduce((memo, item) => {
@@ -75,14 +90,13 @@ const NewOvalPolicyWizard = props => {
     <Formik
       onSubmit={onSubmit(props.history, props.showToast)}
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validationSchema={createValidationSchema([])}
     >
       {formProps => {
 
-        console.log(formProps);
         return (
           <Wizard
-            steps={stepsFactory(props, { enableNext: formProps.isValid, isSubmitting: formProps.isSubmitting })}
+            steps={stepsFactory(props, { enableNext: formProps.isValid, isSubmitting: formProps.isSubmitting, onHgAssignChange, assignedHgs })}
             onClose={() => props.history.push('/compliance/oval_policies')}
             onSave={formProps.handleSubmit}
           />
