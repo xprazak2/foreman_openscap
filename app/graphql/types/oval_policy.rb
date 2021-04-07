@@ -12,6 +12,7 @@ module Types
     field :day_of_month, String
     field :cron_line, String
     has_many :hostgroups, Types::Hostgroup
+    field :all_hosts, Types::Host.connection_type, null: false, resolve: (proc { |object| object.all_hosts })
 
     def self.graphql_definition
       super.tap { |type| type.instance_variable_set(:@name, 'ForemanOpenscap::OvalPolicy') }

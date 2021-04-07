@@ -38,6 +38,11 @@ module ForemanOpenscap
       }.merge(period_enc).with_indifferent_access
     end
 
+    def all_hosts
+      hg_ids = (hostgroups.flat_map(&:descendant_ids) + hostgroups.flat_map(&:root_id)).uniq
+      (hosts + ::Host.where(:hostgroup_id => hg_ids)).uniq
+    end
+
     private
 
     def facets_to_assign(ids, key, facet_class)
