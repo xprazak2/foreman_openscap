@@ -220,6 +220,10 @@ module ForemanOpenscap
         register_graphql_mutation_field :delete_oval_policy, ::Mutations::OvalPolicies::Delete
         register_graphql_mutation_field :create_oval_policy, ::Mutations::OvalPolicies::Create
 
+        extend_graphql_type type: Types::Host do
+          has_many :cves, Types::Cve
+        end
+
         add_controller_action_scope('Api::V2::HostsController', :index) do |base_scope|
           base_scope.preload(:policies)
         end
