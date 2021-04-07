@@ -1,6 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+
 import { getForemanContext } from 'foremanReact/Root/Context/ForemanContext';
 import { useForemanSettings } from 'foremanReact/Root/Context/ForemanContext';
+
+import { TableText } from '@patternfly/react-table';
 
 import { useQuery, gql } from '@apollo/client';
 import queryString from 'query-string';
@@ -39,3 +43,13 @@ export const currentPagination = (history) => {
 }
 
 export const preparePerPageOptions = (opts) => opts.map(item => ({ title: item.toString(), value: item }));
+
+export const linkCell = (policy) => {
+  return (
+    <TableText>
+      <Link to={`/compliance/oval_policies/${decodeId(policy)}`}>
+        { policy.name }
+      </Link>
+    </TableText>
+  )
+}

@@ -1,23 +1,25 @@
 import React, { useState } from 'react';
+
 import { translate as __ } from 'foremanReact/common/I18n';
 import { usePaginationOptions } from 'foremanReact/components/Pagination/PaginationHooks';
 
-import { Table, TableHeader, TableBody } from '@patternfly/react-table';
+import { Table, TableHeader, TableBody, TableText } from '@patternfly/react-table';
 import { Pagination, Flex, FlexItem, Button } from '@patternfly/react-core';
 
-import { preparePerPageOptions, refreshPage } from './OvalPoliciesTableHelpers';
+import { preparePerPageOptions, refreshPage, linkCell } from './OvalPoliciesTableHelpers';
 
 const OvalPoliciesTable = props => {
   const columns = [
     { title: __('Name') }
   ];
-  const rows = props.policies.map(policy => [{ title: policy.name, policy } ]);
+
+  const rows = props.policies.map(policy => ({ cells: [{ title: linkCell(policy) }], policy }));
 
   const actions = [
     {
       title: __('Delete OVAL policy'),
       onClick: (event, rowId, rowData, extra) => {
-        props.toggleModal(rowData[0].policy);
+        props.toggleModal(rowData.policy);
       }
     }
   ];
