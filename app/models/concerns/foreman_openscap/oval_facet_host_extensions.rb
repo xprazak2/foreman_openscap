@@ -9,6 +9,11 @@ module ForemanOpenscap
 
       has_many :host_cves, :class_name => 'ForemanOpenscap::HostCve', :foreign_key => :host_id
       has_many :cves, :through => :host_cves, :class_name => 'ForemanOpenscap::Cve', :source => :cve
+
+      scoped_search :relation => :oval_policies, :on => :id, :complete_value => false, :rename => :all_with_oval_policy_id,
+                    :only_explicit => true, :operators => ['='], :ext_method => :search_by_oval_policy_id
+
+      scoped_search :relation => :host_cves, :on => :cve_id, :rename => :cve_id, :complete_value => false
     end
 
     def cves_without_errata

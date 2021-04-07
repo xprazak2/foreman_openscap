@@ -5,6 +5,9 @@ import { translate as __ } from 'foremanReact/common/I18n';
 import IndexTable from '../../../components/IndexTable';
 import withLoading from '../../../components/withLoading';
 
+import { linkCell } from '../../../helpers/tableHelper';
+import { ovalPoliciesPath, modelPath } from '../../../helpers/pathsHelper';
+
 const OvalPoliciesTable = props => {
   const columns = [{ title: __('Name') }, { title: __('OVAL Content') }];
 
