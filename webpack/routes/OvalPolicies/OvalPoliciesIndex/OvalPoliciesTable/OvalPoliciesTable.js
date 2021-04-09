@@ -6,14 +6,16 @@ import { usePaginationOptions } from 'foremanReact/components/Pagination/Paginat
 import { Table, TableHeader, TableBody, TableText } from '@patternfly/react-table';
 import { Pagination, Flex, FlexItem, Button } from '@patternfly/react-core';
 
-import { preparePerPageOptions, refreshPage, linkCell } from './OvalPoliciesTableHelpers';
+import { preparePerPageOptions, refreshPage } from './OvalPoliciesTableHelpers';
+import { linkCell } from '../../../../helpers/tableHelper';
+import { ovalPoliciesPath, ovalPoliciesNewPath } from '../../../../helpers/pathsHelper';
 
 const OvalPoliciesTable = props => {
   const columns = [
     { title: __('Name') }
   ];
 
-  const rows = props.policies.map(policy => ({ cells: [{ title: linkCell(policy) }], policy }));
+  const rows = props.policies.map(policy => ({ cells: [{ title: linkCell(ovalPoliciesPath, policy) }], policy }));
 
   const actions = [
     {
@@ -36,7 +38,7 @@ const OvalPoliciesTable = props => {
     <React.Fragment>
       <Flex>
         <FlexItem>
-          <Button onClick={() => props.history.push('/compliance/oval_policies/new')} variant="primary" aria-label="create_oval_policy">
+          <Button onClick={() => props.history.push(ovalPoliciesNewPath)} variant="primary" aria-label="create_oval_policy">
             {__('Create OVAL Policy')}
           </Button>
         </FlexItem>

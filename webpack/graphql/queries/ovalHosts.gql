@@ -1,0 +1,16 @@
+query($search: String) {
+  hosts(search: $search) {
+    nodes {
+      id
+      name
+      cves {
+        nodes {
+          id
+          refId
+          refUrl
+          definitionId
+        }
+      }
+    }
+  }
+}

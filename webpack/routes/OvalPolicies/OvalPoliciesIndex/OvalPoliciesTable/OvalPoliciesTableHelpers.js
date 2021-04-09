@@ -43,13 +43,3 @@ export const currentPagination = (history) => {
 }
 
 export const preparePerPageOptions = (opts) => opts.map(item => ({ title: item.toString(), value: item }));
-
-export const linkCell = (policy) => {
-  return (
-    <TableText>
-      <Link to={`/compliance/oval_policies/${decodeId(policy)}`}>
-        { policy.name }
-      </Link>
-    </TableText>
-  )
-}
