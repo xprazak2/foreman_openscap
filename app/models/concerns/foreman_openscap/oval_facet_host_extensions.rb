@@ -9,6 +9,9 @@ module ForemanOpenscap
 
       has_many :host_cves, :class_name => 'ForemanOpenscap::HostCve', :foreign_key => :host_id
       has_many :cves, :through => :host_cves, :class_name => 'ForemanOpenscap::Cve', :source => :cve
+
+      scoped_search :relation => :oval_policies, :on => :id, :complete_value => false, :rename => :all_with_oval_policy_id,
+                    :only_explicit => true, :operators => ['='], :ext_method => :search_by_oval_policy_id
     end
 
     def combined_oval_policies
@@ -23,6 +26,15 @@ module ForemanOpenscap
 
     def oval_policies_enc
       oval_policies_enc_raw.to_json
+    end
+
+    module ClassMethods
+      include ::ForemanOpenscap::OvalHostSearch
+
+      def search_by_oval_policy_id(key, operator, oval_policy_id)
+        all_ids = all_oval_hosts_by_policy_id(oval_policy_id).pluck(:id)
+        { :conditions => "hosts.id IN (#{all_ids.empty? ? 'NULL' : all_ids.join(',')})" }
+      end
     end
   end
 end
