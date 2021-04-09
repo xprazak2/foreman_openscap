@@ -1,5 +1,7 @@
 const showPath = path => `${path}/:id`;
 
+export const ovalContentsPath = '/compliance/oval_contents';
+
 export const ovalPoliciesPath = '/compliance/oval_policies';
 export const ovalPoliciesShowPath = showPath(ovalPoliciesPath);
 export const ovalPoliciesNewPath = '/compliance/oval_policies/new';
