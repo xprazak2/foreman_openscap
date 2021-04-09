@@ -12,13 +12,14 @@ module ForemanOpenscap
         return check_collection unless check_collection.all_passed?
 
         ansible_role = @config.find_config_item
-
-        if model_class == Hostgroup
+        if model_class == ::Hostgroup
           roles_method = :inherited_and_own_ansible_roles
           ids_setter = :hostgroup_ids=
-        else
+        elsif model_class == ::Host
           roles_method = :all_ansible_roles
           ids_setter = :host_ids=
+        else
+          raise "Unexpected model class, expected Host or Hostgroup, got: #{model_class}"
         end
 
         items_with_proxy, items_without_proxy = openscap_proxy_associated(ids, model_class)
