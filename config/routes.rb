@@ -57,6 +57,7 @@ Rails.application.routes.draw do
 
     match 'oval_policies/*page' => 'react#index', :via => :get
     match 'oval_policies' => 'react#index', :via => :get
+    match 'oval_contents' => 'react#index', :via => :get
   end
 
 
