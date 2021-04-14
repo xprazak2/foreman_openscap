@@ -9,30 +9,30 @@ import OvalContentsIndex from '../OvalContentsIndex';
 import { withRedux, withMockedProvider, tick, historyMock } from '../../../../testHelper';
 import { ovalContentsPath } from '../../../../helpers/pathsHelper';
 
-import { mocks, paginatedMocks, pushMock, pagePaginationHistoryMock } from './OvalContentsIndex.fixtures';
+import { mocks, paginatedMocks, pushMock, pagePaginationHistoryMock, emptyMocks, errorMocks } from './OvalContentsIndex.fixtures';
 
 const TestComponent = withRedux(withMockedProvider(OvalContentsIndex));
 
 describe('OvalContentsIndex', () => {
-  // it('should load page', async () => {
-  //   const { container } = render(
-  //     <TestComponent history={historyMock} mocks={mocks} />
-  //   )
-  //   expect(screen.getByText('Loading')).toBeInTheDocument();
-  //   await waitFor(tick);
-  //   expect(screen.getByText('ansible OVAL content')).toBeInTheDocument();
-  //   expect(screen.getByText('openshift OVAL content')).toBeInTheDocument();
-  //   const pageItems = container.querySelector('.pf-c-pagination__total-items');
-  //   expect(pageItems.length === 1);
-  //   expect(within(pageItems).getByText(/1 - 4/)).toBeInTheDocument();
-  //   expect(within(pageItems).getByText('of')).toBeInTheDocument();
-  //   expect(within(pageItems).getByText('4')).toBeInTheDocument();
-  // })
+  it('should load page', async () => {
+    const { container } = render(
+      <TestComponent history={historyMock} mocks={mocks} />
+    )
+    expect(screen.getByText('Loading')).toBeInTheDocument();
+    await waitFor(tick);
+    expect(screen.queryByText('Loading')).not.toBeInTheDocument();
+    expect(screen.getByText('ansible OVAL content')).toBeInTheDocument();
+    expect(screen.getByText('openshift OVAL content')).toBeInTheDocument();
+    const pageItems = container.querySelector('.pf-c-pagination__total-items');
+    expect(pageItems.length === 1);
+    expect(within(pageItems).getByText(/1 - 4/)).toBeInTheDocument();
+    expect(within(pageItems).getByText('of')).toBeInTheDocument();
+    expect(within(pageItems).getByText('4')).toBeInTheDocument();
+  })
   it('should load page with pagination params', async () => {
     const { container } = render(
       <TestComponent history={pagePaginationHistoryMock} mocks={paginatedMocks} />
     );
-
     await waitFor(tick);
     const pageItems = container.querySelector('.pf-c-pagination__total-items');
     expect(pageItems.length === 1);
@@ -43,4 +43,24 @@ describe('OvalContentsIndex', () => {
 
     expect(pushMock).toHaveBeenCalledWith(`${ovalContentsPath}?page=1&perPage=5`);
   })
+  it('should show empty state', async () => {
+    const { container } = render(
+      <TestComponent history={historyMock} mocks={emptyMocks} />
+    )
+    expect(screen.getByText('Loading')).toBeInTheDocument();
+    await waitFor(tick);
+    expect(screen.queryByText('Loading')).not.toBeInTheDocument();
+    expect(screen.getByText('No OVAL Contents found.')).toBeInTheDocument();
+  })
+  it('should show errors', async () => {
+    const { container } = render(
+      <TestComponent history={historyMock} mocks={errorMocks} />
+    )
+    expect(screen.getByText('Loading')).toBeInTheDocument();
+    await waitFor(tick);
+    expect(screen.queryByText('Loading')).not.toBeInTheDocument();
+    expect(screen.getByText('Something very bad happened.')).toBeInTheDocument();
+    expect(screen.getByText('Error!')).toBeInTheDocument();
+  })
+  // test perPage change as well
 });

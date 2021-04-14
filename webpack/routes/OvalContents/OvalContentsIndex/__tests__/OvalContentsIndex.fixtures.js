@@ -1,6 +1,28 @@
 import ovalContentsQuery from '../../../../graphql/queries/ovalContents.gql';
 import { ovalContentsPath } from '../../../../helpers/pathsHelper';
 
+const mockFactory = (resultName, query) => (variables, modelResults, errors = []) => {
+  const mock = {
+    request: {
+      query,
+      variables,
+    },
+    result: {
+      data: {
+        [resultName]: modelResults
+      }
+    }
+  }
+
+  if (errors.length !== 0) {
+    mock.result.errors = errors;
+  }
+
+  return [mock];
+};
+
+const ovalContentMockFactory = mockFactory('ovalContents', ovalContentsQuery);
+
 export const mocks = [
   {
     request: {
@@ -48,6 +70,9 @@ export const paginatedMocks = [
     }
   }
 ]
+
+export const emptyMocks = ovalContentMockFactory({ first: 20, last: 20 }, { totalCount: 0, nodes: [] });
+export const errorMocks = ovalContentMockFactory({ first: 20, last: 20 }, { totalCount: 0, nodes: [] }, [{ message: 'Something very bad happened.' }])
 
 export const pushMock = jest.fn();
 

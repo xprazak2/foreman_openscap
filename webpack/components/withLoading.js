@@ -1,9 +1,7 @@
 import React from 'react';
 import { translate as __ } from 'foremanReact/common/I18n';
 
-
-// use loading from core
-import Loading from './Loading';
+import Loading from 'foremanReact/components/Loading';
 import EmptyState from './EmptyState';
 
 const errorStateTitle = __('Error!');

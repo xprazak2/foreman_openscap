@@ -52,7 +52,7 @@ EmptyState.propTypes = {
 };
 
 EmptyState.defaultProps = {
-  title: 'Unable to connect',
+  title: 'Unable to fetch data from server',
   body: 'There was an error retrieving data from the server. Check your connection and try again.',
   error: undefined,
   search: false,

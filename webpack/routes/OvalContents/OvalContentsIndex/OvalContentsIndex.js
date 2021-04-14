@@ -19,7 +19,13 @@ const OvalContentsIndex = props => {
 
   return (
     <IndexLayout pageTitle={__('OVAL Contents')}>
-      <OvalContentsTable {...props} fetchFn={fetchFn} renameData={renameData} queryName='ovalContents' pagination={pagination} />
+      <OvalContentsTable
+        {...props}
+        fetchFn={fetchFn}
+        renameData={renameData}
+        queryName='ovalContents'
+        pagination={pagination}
+        emptyStateTitle={__('No OVAL Contents found.')} />
     </IndexLayout>
   )
 }
