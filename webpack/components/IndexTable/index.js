@@ -8,11 +8,11 @@ import { preparePerPageOptions, refreshPage } from './IndexTableHelpers';
 
 const IndexTable = props => {
   const handlePerPageSelected = (event, perPage) => {
-    refreshPage(props.history, props.location, { page: 1, perPage })
+    refreshPage(props.history, { page: 1, perPage })
   }
 
   const handlePageSelected = (event, page) => {
-    refreshPage(props.history, props.location, { ...props.pagination, page })
+    refreshPage(props.history, { ...props.pagination, page })
   }
 
   const perPageOptions = preparePerPageOptions(usePaginationOptions())

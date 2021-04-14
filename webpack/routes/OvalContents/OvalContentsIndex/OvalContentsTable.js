@@ -4,8 +4,6 @@ import withLoading from '../../../components/withLoading';
 import IndexTable from '../../../components/IndexTable';
 
 const OvalContentsTable = props => {
-  console.log(props);
-
   const columns = [
     { title: __('Name') }
   ];

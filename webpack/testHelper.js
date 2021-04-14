@@ -40,4 +40,11 @@ export const withMockedProvider = Component => props => {
   )
 }
 
+// use to resolve async mock requests for apollo MockedProvider
 export const tick = () => new Promise(resolve => setTimeout(resolve, 0));
+
+export const historyMock = {
+  location: {
+    search: ''
+  }
+}
