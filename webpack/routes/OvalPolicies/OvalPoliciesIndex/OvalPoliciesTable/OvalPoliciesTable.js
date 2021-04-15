@@ -8,14 +8,14 @@ import { Pagination, Flex, FlexItem, Button } from '@patternfly/react-core';
 
 import { preparePerPageOptions, refreshPage } from './OvalPoliciesTableHelpers';
 import { linkCell } from '../../../../helpers/tableHelper';
-import { ovalPoliciesPath, ovalPoliciesNewPath } from '../../../../helpers/pathsHelper';
+import { ovalPoliciesPath, ovalPoliciesNewPath, modelPath } from '../../../../helpers/pathsHelper';
 
 const OvalPoliciesTable = props => {
   const columns = [
     { title: __('Name') }
   ];
 
-  const rows = props.policies.map(policy => ({ cells: [{ title: linkCell(ovalPoliciesPath, policy) }], policy }));
+  const rows = props.policies.map(policy => ({ cells: [{ title: linkCell(modelPath(ovalPoliciesPath, policy), policy.name) }], policy }));
 
   const actions = [
     {

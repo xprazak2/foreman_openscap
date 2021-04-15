@@ -8,6 +8,7 @@ module Types
     field :ref_url, String
     field :has_errata, Boolean
     field :definition_id, String
+    has_many :hosts, Types::Host
 
     def self.graphql_definition
       super.tap { |type| type.instance_variable_set(:@name, 'ForemanOpenscap::Cve') }

@@ -1,3 +1,10 @@
+import { decodeId } from './globalIdHelper';
+
+
+export const modelPath = (basePath, model) => `${basePath}/${decodeId(model)}`;
+// export const resolvePath = (path, params) => Object.entries(params).reduce((memo, [key, value]) => path.replace(key, value), path);
+
+
 const showPath = path => `${path}/:id`;
 
 export const ovalContentsPath = '/compliance/oval_contents';

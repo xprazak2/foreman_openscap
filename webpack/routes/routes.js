@@ -14,7 +14,7 @@ export default [
     exact: true
   },
   {
-    path: '/compliance/oval_policies/:id',
+    path: '/compliance/oval_policies/:id/:tab?',
     render: props => <OvalPoliciesShow {...props} />,
     exact: true
   },
