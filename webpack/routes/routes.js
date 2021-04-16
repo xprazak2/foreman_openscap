@@ -5,7 +5,7 @@ import OvalPoliciesShow from './OvalPolicies/OvalPoliciesShow';
 
 import OvalContentsIndex from './OvalContents/OvalContentsIndex';
 
-import { ovalContentsPath } from '../helpers/pathsHelper';
+import { ovalContentsPath, ovalPoliciesShowPath } from '../helpers/pathsHelper';
 
 export default [
   {
@@ -14,7 +14,7 @@ export default [
     exact: true
   },
   {
-    path: '/compliance/oval_policies/:id/:tab?',
+    path: ovalPoliciesShowPath,
     render: props => <OvalPoliciesShow {...props} />,
     exact: true
   },

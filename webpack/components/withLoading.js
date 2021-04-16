@@ -7,8 +7,17 @@ import EmptyState from './EmptyState';
 const errorStateTitle = __('Error!');
 const emptyStateBody = "";
 
-const withLoading = Component => ({ fetchFn, queryName, renameData, emptyStateTitle, ...rest }) => {
+const pluckData = (data, path) => {
+  const split = path.split('.');
+  return split.reduce((memo, item) => {
+    if (item) {
+      return memo[item];
+    }
+    throw 'Unexpected empty segment in response data path';
+  }, data)
+}
 
+const withLoading = Component => ({ fetchFn, resultPath, renameData, emptyStateTitle, ...rest }) => {
   let { loading, error, data } = fetchFn(rest);
 
   if (loading) {
@@ -19,7 +28,9 @@ const withLoading = Component => ({ fetchFn, queryName, renameData, emptyStateTi
     return <EmptyState error={error} title={errorStateTitle} body={error.message} />
   }
 
-  if (data[queryName].nodes.length === 0) {
+  const result = pluckData(data, resultPath);
+
+  if ((Array.isArray(result) && result.length === 0) || !result) {
     return <EmptyState title={emptyStateTitle} body={emptyStateBody} />
   }
 

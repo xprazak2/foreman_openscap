@@ -9,14 +9,13 @@ import EmptyState from '../../../components/EmptyState';
 import ovalHosts from '../../../graphql/queries/ovalHosts.gql';
 
 import { linkCell } from '../../../helpers/tableHelper';
-import { hostsPath } from '../../../helpers/pathsHelper';
+import { hostsPath, modelPath } from '../../../helpers/pathsHelper';
 
 const errorStateTitle = __('Error!');
 const emptyStateBody = "";
 
 const HostsTab = props => {
   const search = `all_with_oval_policy_id = ${props.match.params.id}`
-  console.log(search)
   const { loading, error, data } = useQuery(ovalHosts, { variables: { search  } })
 
   if (loading) {
@@ -29,12 +28,9 @@ const HostsTab = props => {
 
   const hosts = data.hosts.nodes;
 
-  console.log(data);
-
   const columns = [{ title: 'Name' }];
 
-  const rows = hosts.map(host => ({ cells: [{ title: linkCell(hostsPath, host)}], host }))
-  console.log(rows)
+  const rows = hosts.map(host => ({ cells: [{ title: linkCell(modelPath(hostsPath, host), host.name)}], host }))
 
   return (
     <React.Fragment>
