@@ -5,7 +5,7 @@ import OvalPoliciesShow from './OvalPolicies/OvalPoliciesShow';
 
 import OvalContentsIndex from './OvalContents/OvalContentsIndex';
 
-import { ovalContentsPath, ovalPoliciesShowPath } from '../helpers/pathsHelper';
+import { ovalContentsPath, ovalPoliciesShowPath, ovalPoliciesPath } from '../helpers/pathsHelper';
 
 export default [
   {
@@ -19,7 +19,7 @@ export default [
     exact: true
   },
   {
-    path: '/compliance/oval_policies',
+    path: ovalPoliciesPath,
     render: props => <OvalPoliciesIndex {...props} />,
     exact: true
   },

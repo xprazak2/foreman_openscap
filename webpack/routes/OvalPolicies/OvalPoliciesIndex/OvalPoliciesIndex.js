@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { Helmet } from 'react-helmet';
-
-import { Grid, GridItem, TextContent, Text, TextVariants, Flex, FlexItem, Button } from '@patternfly/react-core';
-
-import ToastsList from 'foremanReact/components/ToastsList';
+import { useQuery } from '@apollo/client';
 
 import ConfirmModal from '../../../components/ConfirmModal';
 import OvalPoliciesTable from './OvalPoliciesTable';
+import IndexLayout from '../../../components/IndexLayout';
+
+import { paramsToVars, currentPagination } from '../../../helpers/pageParamsHelper';
+import policiesQuery from '../../../graphql/queries/ovalPolicies.gql';
 
 import { submitDelete, prepareMutation } from './OvalPoliciesIndexHelpers';
-import './OvalPoliciesIndex.scss';
 
 const OvalPoliciesIndex = props => {
   const [policy, setPolicy] = useState(null);
@@ -18,28 +17,33 @@ const OvalPoliciesIndex = props => {
     setPolicy(policyToDelete);
   }
 
+  const pagination = currentPagination(props.history)
+
+  const fetchFn = props => useQuery(policiesQuery, { variables: paramsToVars(props.history) });
+
+  const renameData = data => ({ policies: data.ovalPolicies.nodes, totalCount: data.ovalPolicies.totalCount });
+
   return (
     <React.Fragment>
-      <Helmet><title>{__('OVAL Policies')}</title></Helmet>
-      <ToastsList />
-      <Grid className='scap-page-grid'>
-        <GridItem span={12}>
-          <TextContent>
-            <Text component={TextVariants.h1}>{__('OVAL Policies')}</Text>
-          </TextContent>
-        </GridItem>
-        <GridItem span={12}>
-          <OvalPoliciesTable {...props} toggleModal={toggleModal} />
-        </GridItem>
-      </Grid>
+      <IndexLayout pageTitle={__('OVAL Policies')}>
+        <OvalPoliciesTable
+          {...props}
+          fetchFn={fetchFn}
+          renameData={renameData}
+          resultPath='ovalPolicies.nodes'
+          pagination={pagination}
+          emptyStateTitle={__('No OVAL Policies found')}
+          toggleModal={toggleModal}
+        />
+      </IndexLayout>
       <ConfirmModal
-        title='Delete OVAL Policy'
-        onClose={toggleModal}
-        isOpen={!!policy}
-        onConfirm={submitDelete}
-        prepareMutation={prepareMutation(props.history, toggleModal, props.showToast)}
-        record={policy}
-      />
+          title='Delete OVAL Policy'
+          onClose={toggleModal}
+          isOpen={!!policy}
+          onConfirm={submitDelete}
+          prepareMutation={prepareMutation(props.history, toggleModal, props.showToast)}
+          record={policy}
+        />
     </React.Fragment>
   )
 }

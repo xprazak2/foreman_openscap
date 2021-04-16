@@ -1,6 +1,5 @@
 import { useMutation } from '@apollo/client';
-
-import { currentPagination, pageToVars } from './OvalPoliciesTable/OvalPoliciesTableHelpers';
+import { paramsToVars } from '../../../helpers/pageParamsHelper';
 
 import deleteOvalPolicyMutation from '../../../graphql/mutations/deleteOvalPolicy.gql';
 import policiesQuery from '../../../graphql/queries/ovalPolicies.gql';
@@ -15,7 +14,7 @@ const onError = (showToast) => (error) => {
 }
 
 export const prepareMutation = (history, toggleModal, showToast) => () => {
-  const pagination = pageToVars(currentPagination(history));
+  const pagination = paramsToVars(history);
 
   const options = {
     refetchQueries: [{ query: policiesQuery, variables: pagination }],
