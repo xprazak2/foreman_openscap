@@ -259,7 +259,6 @@ module ForemanOpenscap
         if Gem::Version.new(ForemanRemoteExecution::VERSION) >= Gem::Version.new('1.2.3')
           options[:host_action_button] = true
         end
-
         RemoteExecutionFeature.register(:foreman_openscap_run_scans, N_("Run OpenSCAP scan"), options)
       end
     end
