@@ -42,8 +42,8 @@ export const mocks = policiesMockFactory(
   {
     totalCount: 2,
     nodes: [
-      { id: 'abc', name: 'first policy' },
-      { id: 'xyz', name: 'second policy' },
+      { id: 'abc', name: 'first policy', ovalContent: { name: 'first content' } },
+      { id: 'xyz', name: 'second policy', ovalContent: { name: 'second content' } },
     ],
   }
 );
@@ -52,8 +52,8 @@ export const pageParamsMocks = policiesMockFactory(
   {
     totalCount: 7,
     nodes: [
-      { id: 'xyz', name: 'sixth policy' },
-      { id: 'abc', name: 'seventh policy' },
+      { id: 'xyz', name: 'sixth policy', ovalContent: { name: 'sixth content' } },
+      { id: 'abc', name: 'seventh policy', ovalContent: { name: 'seventh content' } },
     ],
   }
 );

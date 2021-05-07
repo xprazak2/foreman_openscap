@@ -171,9 +171,12 @@ module ForemanOpenscap
         menu :labs_menu, :oval_contents, :caption => N_('OVAL Contents'),
                                          :url_hash => { :controller => 'react', :action => 'index' },
                                          :url => '/experimental/compliance/oval_contents',
+                                         :parent => :lab_features_menu
+
         menu :labs_menu, :oval_policies, :caption => N_('OVAL Policies'),
                                          :url_hash => { :controller => 'react', :action => 'index' },
                                          :url => '/experimental/compliance/oval_policies',
+                                         :parent => :lab_features_menu
         # add dashboard widget
         widget 'compliance_host_reports_widget',
                :name => N_('Latest Compliance Reports'), :sizex => 6, :sizey => 1

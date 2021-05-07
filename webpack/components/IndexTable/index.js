@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Table, TableHeader, TableBody } from '@patternfly/react-table';
 import { Pagination, Flex, FlexItem } from '@patternfly/react-core';
+
 import { usePaginationOptions } from 'foremanReact/components/Pagination/PaginationHooks';
 
 import { preparePerPageOptions, refreshPage } from './IndexTableHelper';

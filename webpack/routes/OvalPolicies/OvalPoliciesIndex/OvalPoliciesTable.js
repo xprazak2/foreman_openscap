@@ -6,10 +6,10 @@ import IndexTable from '../../../components/IndexTable';
 import withLoading from '../../../components/withLoading';
 
 const OvalPoliciesTable = props => {
-  const columns = [{ title: __('Name') }];
+  const columns = [{ title: __('Name') }, { title: __('OVAL Content') }];
 
   const rows = props.policies.map(policy => ({
-    cells: [{ title: policy.name }],
+    cells: [{ title: policy.name }, { title: policy.ovalContent.name }],
     policy,
   }));
 

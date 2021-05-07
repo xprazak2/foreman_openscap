@@ -29,6 +29,8 @@ describe('OvalPoliciesIndex', () => {
     await waitFor(tick);
     expect(screen.getByText('first policy')).toBeInTheDocument();
     expect(screen.getByText('second policy')).toBeInTheDocument();
+    expect(screen.getByText('first content')).toBeInTheDocument();
+    expect(screen.getByText('second content')).toBeInTheDocument();
     const pageItems = container.querySelector('.pf-c-pagination__total-items');
     expect(within(pageItems).getByText(/1 - 2/)).toBeInTheDocument();
     expect(within(pageItems).getByText('of')).toBeInTheDocument();

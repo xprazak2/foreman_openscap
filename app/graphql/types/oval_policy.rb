@@ -11,5 +11,6 @@ module Types
     field :weekday, String
     field :day_of_month, String
     field :cron_line, String
+    belongs_to :oval_content, ::Types::OvalContent
   end
 end

@@ -31,7 +31,7 @@ const OvalPoliciesIndex = props => {
         {...props}
         fetchFn={useFetchFn}
         renameData={renameData}
-        resultPath="ovalPolicies.nodes"
+        queryName="ovalPolicies"
         pagination={pagination}
         emptyStateTitle={__('No OVAL Policies found')}
       />

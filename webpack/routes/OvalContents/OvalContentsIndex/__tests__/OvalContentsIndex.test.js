@@ -7,7 +7,6 @@ import '@testing-library/jest-dom';
 import OvalContentsIndex from '../OvalContentsIndex';
 
 import {
-  withRedux,
   withMockedProvider,
   tick,
   historyMock,
@@ -23,7 +22,7 @@ import {
   errorMocks,
 } from './OvalContentsIndex.fixtures';
 
-const TestComponent = withRedux(withMockedProvider(OvalContentsIndex));
+const TestComponent = withMockedProvider(OvalContentsIndex);
 
 describe('OvalContentsIndex', () => {
   it('should load page', async () => {
