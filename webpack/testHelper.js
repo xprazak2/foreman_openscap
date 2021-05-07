@@ -1,6 +1,13 @@
 import React from 'react';
-import { getForemanContext } from 'foremanReact/Root/Context/ForemanContext';
 import { MockedProvider } from '@apollo/react-testing';
+import { MemoryRouter } from 'react-router-dom';
+import { getForemanContext } from 'foremanReact/Root/Context/ForemanContext';
+
+export const withRouter = Component => props => (
+  <MemoryRouter>
+    <Component {...props} />
+  </MemoryRouter>
+);
 
 export const withMockedProvider = Component => props => {
   const ForemanContext = getForemanContext(ctx);
@@ -33,7 +40,11 @@ export const historyMock = {
   },
 };
 
-export const mockFactory = (resultName, query) => (variables, modelResults, errors = []) => {
+export const mockFactory = (resultName, query) => (
+  variables,
+  modelResults,
+  errors = []
+) => {
   const mock = {
     request: {
       query,
@@ -41,10 +52,10 @@ export const mockFactory = (resultName, query) => (variables, modelResults, erro
     },
     result: {
       data: {
-        [resultName]: modelResults
-      }
-    }
-  }
+        [resultName]: modelResults,
+      },
+    },
+  };
 
   if (errors.length !== 0) {
     mock.result.errors = errors;

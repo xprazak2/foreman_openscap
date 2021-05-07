@@ -12,7 +12,10 @@ const OvalPoliciesTable = props => {
   const columns = [{ title: __('Name') }, { title: __('OVAL Content') }];
 
   const rows = props.policies.map(policy => ({
-    cells: [{ title: policy.name }, { title: policy.ovalContent.name }],
+    cells: [
+      { title: linkCell(modelPath(ovalPoliciesPath, policy), policy.name) },
+      { title: policy.ovalContent.name },
+    ],
     policy,
   }));
 

@@ -15,8 +15,8 @@ const pluckData = (data, path) => {
       return memo[item];
     }
     throw 'Unexpected empty segment in response data path';
-  }, data)
-}
+  }, data);
+};
 
 const withLoading = Component => {
   const Subcomponent = ({

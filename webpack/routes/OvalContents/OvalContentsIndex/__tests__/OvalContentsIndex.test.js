@@ -6,11 +6,7 @@ import '@testing-library/jest-dom';
 
 import OvalContentsIndex from '../OvalContentsIndex';
 
-import {
-  withMockedProvider,
-  tick,
-  historyMock,
-} from '../../../../testHelper';
+import { withMockedProvider, tick, historyMock } from '../../../../testHelper';
 import { ovalContentsPath } from '../../../../helpers/pathsHelper';
 
 import {

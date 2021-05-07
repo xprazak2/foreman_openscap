@@ -1,5 +1,5 @@
 export const policySchedule = policy => {
-  switch(policy.period) {
+  switch (policy.period) {
     case 'weekly':
       return `Weekly, on ${policy.weekday}`;
     case 'monthly':
@@ -9,4 +9,4 @@ export const policySchedule = policy => {
     default:
       return 'Unknown schedule';
   }
-}
+};

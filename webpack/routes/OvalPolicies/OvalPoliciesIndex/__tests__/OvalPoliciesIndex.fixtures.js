@@ -1,29 +1,6 @@
 import policiesQuery from '../../../../graphql/queries/ovalPolicies.gql';
 import { ovalPoliciesPath } from '../../../../helpers/pathsHelper';
-
-const mockFactory = (resultName, query) => (
-  variables,
-  modelResults,
-  errors = []
-) => {
-  const mock = {
-    request: {
-      query,
-      variables,
-    },
-    result: {
-      data: {
-        [resultName]: modelResults,
-      },
-    },
-  };
-
-  if (errors.length !== 0) {
-    mock.result.errors = errors;
-  }
-
-  return [mock];
-};
+import { mockFactory } from '../../../../testHelper';
 
 const policiesMockFactory = mockFactory('ovalPolicies', policiesQuery);
 
@@ -42,8 +19,16 @@ export const mocks = policiesMockFactory(
   {
     totalCount: 2,
     nodes: [
-      { id: 'abc', name: 'first policy', ovalContent: { name: 'first content' } },
-      { id: 'xyz', name: 'second policy', ovalContent: { name: 'second content' } },
+      {
+        id: 'abc',
+        name: 'first policy',
+        ovalContent: { name: 'first content' },
+      },
+      {
+        id: 'xyz',
+        name: 'second policy',
+        ovalContent: { name: 'second content' },
+      },
     ],
   }
 );
@@ -52,8 +37,16 @@ export const pageParamsMocks = policiesMockFactory(
   {
     totalCount: 7,
     nodes: [
-      { id: 'xyz', name: 'sixth policy', ovalContent: { name: 'sixth content' } },
-      { id: 'abc', name: 'seventh policy', ovalContent: { name: 'seventh content' } },
+      {
+        id: 'xyz',
+        name: 'sixth policy',
+        ovalContent: { name: 'sixth content' },
+      },
+      {
+        id: 'abc',
+        name: 'seventh policy',
+        ovalContent: { name: 'seventh content' },
+      },
     ],
   }
 );

@@ -14,16 +14,30 @@ const CvesTable = props => {
     { title: __('Ref Id') },
     { title: __('Has Errata?') },
     { title: __('Hosts Count') },
-
   ];
 
-  const cveRefId = cve => (<a href={cve.refUrl} rel="noopener noreferrer">{cve.refId}</a>)
+  const cveRefId = cve => (
+    <a href={cve.refUrl} rel="noopener noreferrer">
+      {cve.refId}
+    </a>
+  );
 
-  const hostCount = cve => linkCell(addSearch(hostsPath, { search: `cve_id = ${decodeId(cve)}` }) , cve.hosts.nodes.length);
+  const hostCount = cve =>
+    linkCell(
+      addSearch(hostsPath, { search: `cve_id = ${decodeId(cve)}` }),
+      cve.hosts.nodes.length
+    );
 
-  const rows = props.cves.map(cve => ({ cells: [{ title: cveRefId(cve) }, { title: cve.hasErrata ? 'Yes' : 'No' }, { title: hostCount(cve) } ], cve }))
+  const rows = props.cves.map(cve => ({
+    cells: [
+      { title: cveRefId(cve) },
+      { title: cve.hasErrata ? 'Yes' : 'No' },
+      { title: hostCount(cve) },
+    ],
+    cve,
+  }));
 
-  const actions = []
+  const actions = [];
 
   return (
     <IndexTable
@@ -36,7 +50,7 @@ const CvesTable = props => {
       location={props.location}
       ariaTableLabel={__('Table of CVEs for OVAL policy')}
     />
-  )
-}
+  );
+};
 
 export default withLoading(CvesTable);

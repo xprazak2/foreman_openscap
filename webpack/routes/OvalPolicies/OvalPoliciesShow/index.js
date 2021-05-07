@@ -9,7 +9,7 @@ import ovalPolicy from '../../../graphql/queries/ovalPolicy.gql';
 const WrappedOvalPoliciesShow = props => {
   const id = encodeId('ForemanOpenscap::OvalPolicy', props.match.params.id);
 
-  const fetchFn = (props) => useQuery(ovalPolicy, { variables: { id }});
+  const fetchFn = props => useQuery(ovalPolicy, { variables: { id } });
 
   const renameData = data => ({ policy: data.ovalPolicy });
 
@@ -18,10 +18,10 @@ const WrappedOvalPoliciesShow = props => {
       {...props}
       fetchFn={fetchFn}
       renameData={renameData}
-      resultPath='ovalPolicy'
+      resultPath="ovalPolicy"
       emptyStateTitle={__('No OVAL Policy found')}
     />
-  )
-}
+  );
+};
 
 export default WrappedOvalPoliciesShow;

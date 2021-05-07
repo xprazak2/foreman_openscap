@@ -3,7 +3,11 @@ import OvalContentsIndex from './OvalContents/OvalContentsIndex';
 import OvalPoliciesIndex from './OvalPolicies/OvalPoliciesIndex';
 import OvalPoliciesShow from './OvalPolicies/OvalPoliciesShow';
 
-import { ovalContentsPath, ovalPoliciesPath, ovalPoliciesShowPath } from '../helpers/pathsHelper';
+import {
+  ovalContentsPath,
+  ovalPoliciesPath,
+  ovalPoliciesShowPath,
+} from '../helpers/pathsHelper';
 
 export default [
   {
@@ -19,6 +23,6 @@ export default [
   {
     path: ovalPoliciesShowPath,
     render: props => <OvalPoliciesShow {...props} />,
-    exact: true
-  }
+    exact: true,
+  },
 ];
