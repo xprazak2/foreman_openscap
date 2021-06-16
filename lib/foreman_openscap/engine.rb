@@ -224,6 +224,7 @@ module ForemanOpenscap
         register_graphql_query_field :cves, '::Types::Cve', :collection_field
 
         register_graphql_mutation_field :delete_oval_policy, ::Mutations::OvalPolicies::Delete
+        register_graphql_mutation_field :delete_oval_content, ::Mutations::OvalContents::Delete
 
         # move to core
         extend_graphql_type type: ::Types::Hostgroup do
