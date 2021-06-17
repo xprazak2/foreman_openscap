@@ -20,7 +20,7 @@ const IndexTable = props => {
 
   return (
     <React.Fragment>
-      <Flex className="pf-u-pt-md">
+      <Flex>
         <FlexItem>{props.toolbarBtns}</FlexItem>
         <FlexItem align={{ default: 'alignRight' }}>
           <Pagination
@@ -50,7 +50,7 @@ const IndexTable = props => {
 IndexTable.propTypes = {
   history: PropTypes.object.isRequired,
   pagination: PropTypes.object.isRequired,
-  toolbarBtns: PropTypes.array,
+  toolbarBtns: PropTypes.node,
   totalCount: PropTypes.number.isRequired,
   ariaTableLabel: PropTypes.string.isRequired,
   columns: PropTypes.array.isRequired,
