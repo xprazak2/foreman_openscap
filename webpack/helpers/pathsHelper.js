@@ -3,6 +3,7 @@ import { decodeId } from './globalIdHelper';
 const experimental = path => `/experimental${path}`;
 
 const showPath = path => `${path}/:id`;
+const newPath = path => `${path}/new`;
 
 export const modelPath = (basePath, model) => `${basePath}/${decodeId(model)}`;
 
@@ -15,6 +16,7 @@ export const resolvePath = (path, params) =>
   );
 
 export const ovalContentsPath = experimental('/compliance/oval_contents');
+export const ovalContentsNewPath = newPath(ovalContentsPath);
 export const ovalPoliciesPath = experimental('/compliance/oval_policies');
 export const ovalPoliciesShowPath = `${showPath(ovalPoliciesPath)}/:tab?`;
 export const hostsPath = '/hosts';
