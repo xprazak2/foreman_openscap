@@ -3,8 +3,9 @@ import { translate as __ } from 'foremanReact/common/I18n';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Field as FormikField } from 'formik';
-import { Form as PfForm, ActionGroup, Button, Grid, GridItem, FileUpload, FormGroup } from '@patternfly/react-core';
+import { submitForm } from './OvalContentsNewActions';
 
+import { Form as PfForm, ActionGroup, Button, Grid, GridItem, FileUpload, FormGroup } from '@patternfly/react-core';
 import IndexLayout from '../../../components/IndexLayout';
 import { TextField } from '../../../helpers/formFieldsHelper';
 
@@ -43,9 +44,10 @@ const OvalContentsNew = props => {
           formData.append('oval_content[scap_file]', file)
           formData.append('oval_content[name]', values.name)
           // formData.append('oval_content', { name: values.name, scap_file: file })
-          props.handleSubmit(formData);
-          console.log(values, actions)
-          actions.setSubmitting(false)
+          // props.handleSubmit(formData);
+          submitForm(formData, actions)
+          // console.log(values, actions)
+          // actions.setSubmitting(false)
         }}
         initialValues={{ name: '' }}
         validationSchema={validationSchema}

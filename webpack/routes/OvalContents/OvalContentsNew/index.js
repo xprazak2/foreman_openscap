@@ -7,7 +7,7 @@ import OvalContentsNew from './OvalContentsNew';
 const WrappedOvalContentsNew = props => {
   const dispatch = useDispatch();
 
-  const handleSubmit = (params) => {
+  // const handleSubmit = (params) => {
     // const opts = {
     //   handleSuccess: console.log,
     //   handleError: console.log,
@@ -16,11 +16,11 @@ const WrappedOvalContentsNew = props => {
     //   },
     //   params
     // }
-    submitForm(params)
-  }
+  //   submitForm(params)
+  // }
 
   return (
-    <OvalContentsNew {...props} handleSubmit={handleSubmit} />
+    <OvalContentsNew {...props} />
   )
 }
 

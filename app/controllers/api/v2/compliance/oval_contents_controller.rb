@@ -35,8 +35,6 @@ module Api::V2
       param_group :oval_content, :as => :create
 
       def create
-        require 'pry-byebug'
-        binding.pry
         @oval_content = ForemanOpenscap::OvalContent.new(oval_content_params)
         process_response @oval_content.save
       end
