@@ -1,78 +1,78 @@
 import React, { useState } from 'react';
-import { translate as __ } from 'foremanReact/common/I18n';
+import { sprintf, translate as __ } from 'foremanReact/common/I18n';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Field as FormikField } from 'formik';
-import { submitForm } from './OvalContentsNewActions';
+import { onSubmit, createValidationSchema, validateFile, submitDisabled } from './OvalContentsNewHelper';
+import { onError } from 'foremanReact/redux/actions/common/forms';
 
-import { Form as PfForm, ActionGroup, Button, Grid, GridItem, FileUpload, FormGroup } from '@patternfly/react-core';
+import { Form as PfForm, ActionGroup, Button, Grid, GridItem, FileUpload, FormGroup, Radio } from '@patternfly/react-core';
 import IndexLayout from '../../../components/IndexLayout';
 import { TextField } from '../../../helpers/formFieldsHelper';
+import { ovalContentsPath } from '../../../helpers/pathsHelper';
 
 const OvalContentsNew = props => {
   const [file, setFile] = useState(null);
   const [fileTouched, setFileTouched] = useState(false);
+  const [fileFromUrl, setFileFromUrl] = useState(true);
 
   const handleFileChange = (value, filename, event) => {
-    console.log(value, event)
     setFile(value);
     setFileTouched(true);
   }
 
-  const validationSchema = Yup.object().shape({
-    name: Yup.string().required("can't be blank")
-  })
-
-  const validateFile = (file, touched) => {
-    if (!touched) {
-      return 'default'
-    }
-
-    return file ? 'success' : 'error';
-  }
-
-  const submitDisabled = (formProps, file) => {
-    return formProps.isSubmitting || !formProps.isValid || !file;
-  }
-
   return (
-    <IndexLayout pageTitle={__('New OVAL Policy')} >
+    <IndexLayout pageTitle={__('New OVAL Content')} contentWidthSpan={6}>
       <Formik
-        onSubmit={(values, actions) => {
-          const formData = new FormData();
-          console.log(file)
-          formData.append('oval_content[scap_file]', file)
-          formData.append('oval_content[name]', values.name)
-          // formData.append('oval_content', { name: values.name, scap_file: file })
-          // props.handleSubmit(formData);
-          submitForm(formData, actions)
-          // console.log(values, actions)
-          // actions.setSubmitting(false)
-        }}
-        initialValues={{ name: '' }}
-        validationSchema={validationSchema}
+        onSubmit={(values, actions) => onSubmit(values, actions, props.showToast, props.history, fileFromUrl, file)}
+        initialValues={{ name: '', url: '' }}
+        validationSchema={createValidationSchema(fileFromUrl)}
        >
         {formProps => {
           return (
             <PfForm>
-              <Grid>
-                <GridItem span={8}>
                   <FormikField label="Name" name="name" component={TextField} isRequired={true} />
-                  <FormGroup label="File" isRequired={true}>
-                    <FileUpload
-                      value={file}
-                      filename={file ? file.name : ''}
-                      onChange={handleFileChange}
-                      isDisabled={formProps.isSubmitting}
-                      validated={validateFile(file, fileTouched)}
+                  <FormGroup label={__('OVAL Content Source')}>
+                    <Radio
+                      id='scap-file-source-url'
+                      isChecked={fileFromUrl}
+                      name="fileSource"
+                      onChange={() => {
+                        setFileFromUrl(true)
+                        // Force validations to run by setting the same value.
+                        // Workaround for https://github.com/formium/formik/issues/1755
+                        formProps.setFieldValue(formProps.values.url)
+                      }}
+                      label={__('OVAL Content from URL')}
+                    />
+                    <Radio
+                      id='scap-file-source-file'
+                      isChecked={!fileFromUrl}
+                      name="fileSource"
+                      onChange={() => {
+                        setFileFromUrl(false)
+                        const filtered = Object.entries(formProps.errors).filter(([key, value]) => key !== 'url')
+                        formProps.setErrors(Object.fromEntries(filtered))
+                      }}
+                      label={__('OVAL Content from file')}
                     />
                   </FormGroup>
+                  { !fileFromUrl ?
+                    <FormGroup label="File" isRequired={true}>
+                      <FileUpload
+                        value={file}
+                        filename={file ? file.name : ''}
+                        onChange={handleFileChange}
+                        isDisabled={formProps.isSubmitting}
+                        validated={validateFile(file, fileTouched)}
+                      />
+                    </FormGroup> :
+                    <FormikField label={__("URL")} name="url" component={TextField} isRequired={true}/>
+                  }
                   <ActionGroup>
-                    <Button variant="primary" onClick={formProps.handleSubmit} isDisabled={submitDisabled(formProps, file)}>Submit</Button>
+                    <Button variant="primary" onClick={formProps.handleSubmit} isDisabled={submitDisabled(formProps, file, fileFromUrl)}>Submit</Button>
                     <Button variant="link" isDisabled={formProps.isSubmitting}>Cancel</Button>
                   </ActionGroup>
-                </GridItem>
-              </Grid>
             </PfForm>
           )
         }}
