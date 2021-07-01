@@ -15,6 +15,8 @@ export const resolvePath = (path, params) =>
     path
   );
 
+export const ovalContentsApiPath = '/api/v2/compliance/oval_contents';
+
 export const ovalContentsPath = experimental('/compliance/oval_contents');
 export const ovalContentsNewPath = newPath(ovalContentsPath);
 export const ovalPoliciesPath = experimental('/compliance/oval_policies');

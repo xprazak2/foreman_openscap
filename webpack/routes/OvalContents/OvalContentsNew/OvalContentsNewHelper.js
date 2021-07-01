@@ -1,47 +1,73 @@
 import * as Yup from 'yup';
 
 import api from 'foremanReact/redux/API/API';
-import { onError } from 'foremanReact/redux/actions/common/forms';
+import { prepareErrors } from 'foremanReact/redux/actions/common/forms';
+import { sprintf, translate as __ } from 'foremanReact/common/I18n';
+import {
+  ovalContentsPath,
+  ovalContentsApiPath,
+} from '../../../helpers/pathsHelper';
 
-const submitForm = async (params, actions) => {
+export const submitForm = (params, actions) => {
   const headers = {
     'Content-Type': 'multipart/form-data',
-  }
+  };
+  return api.post(ovalContentsApiPath, params, headers);
+};
 
-  return await api.post('/api/v2/compliance/oval_contents', params, headers);
-}
-
-export const onSubmit = async (values, actions, showToast, history, fileFromUrl, file) => {
+export const onSubmit = async (
+  values,
+  actions,
+  showToast,
+  history,
+  fileFromUrl,
+  file
+) => {
   const formData = new FormData();
   if (fileFromUrl) {
-    formData.append('oval_content[url]', values.url)
+    formData.append('oval_content[url]', values.url);
   } else {
-    formData.append('oval_content[scap_file]', file)
+    formData.append('oval_content[scap_file]', file);
   }
-  formData.append('oval_content[name]', values.name)
+  formData.append('oval_content[name]', values.name);
   try {
-    await submitForm(formData, actions)
-    history.push(ovalContentsPath)
-    showToast({ type: 'success', message: sprintf(__('OVAL Content %s successfully created'), values.name) })
-  } catch(error) {
-    onError(error, actions)
+    await submitForm(formData, actions);
+  } catch (error) {
+    onError(error, actions, showToast);
   }
-}
+  history.push(ovalContentsPath);
+  showToast({
+    type: 'success',
+    message: sprintf(__('OVAL Content %s successfully created'), values.name),
+  });
+};
+
+const onError = (error, actions, showToast) => {
+  actions.setSubmitting(false);
+  if (error.response?.status === 422) {
+    actions.setErrors(prepareErrors(error?.response?.data?.error?.errors, {}));
+  } else {
+    showToast({
+      type: 'error',
+      message: __(
+        'Unknown error when submitting data, please try again later.'
+      ),
+    });
+  }
+};
 
 export const validateFile = (file, touched) => {
   if (!touched) {
-    return 'default'
+    return 'default';
   }
   return file ? 'success' : 'error';
-}
+};
 
-export const submitDisabled = (formProps, file, fileFromUrl) => {
-  return formProps.isSubmitting || !formProps.isValid || (!fileFromUrl && !file);
-}
+export const submitDisabled = (formProps, file, fileFromUrl) =>
+  formProps.isSubmitting || !formProps.isValid || (!fileFromUrl && !file);
 
-export const createValidationSchema = contentFromUrl => {
-  return Yup.object().shape({
+export const createValidationSchema = contentFromUrl =>
+  Yup.object().shape({
     name: Yup.string().required("can't be blank"),
-    ...contentFromUrl && { url: Yup.string().required("can't be blank") }
-  })
-}
+    ...(contentFromUrl && { url: Yup.string().required("can't be blank") }),
+  });

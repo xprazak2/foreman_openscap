@@ -16,10 +16,14 @@ const OvalContentsTable = props => {
   }));
 
   const createBtn = (
-    <Button onClick={() => props.history.push(ovalContentsNewPath)} variant="primary" aria-label="create_oval_content">
+    <Button
+      onClick={() => props.history.push(ovalContentsNewPath)}
+      variant="primary"
+      aria-label="create_oval_content"
+    >
       {__('Create OVAL Content')}
     </Button>
-  )
+  );
 
   const actions = [];
 

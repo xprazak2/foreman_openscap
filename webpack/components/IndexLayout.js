@@ -19,7 +19,7 @@ const IndexLayout = ({ pageTitle, children, contentWidthSpan }) => (
     </Helmet>
     <ToastsList />
     <Grid className="scap-page-grid">
-      <GridItem span={12} className='pf-u-pb-lg'>
+      <GridItem span={12} className="pf-u-pb-lg">
         <TextContent>
           <Text component={TextVariants.h1}>{pageTitle}</Text>
         </TextContent>
@@ -32,6 +32,11 @@ const IndexLayout = ({ pageTitle, children, contentWidthSpan }) => (
 IndexLayout.propTypes = {
   pageTitle: PropTypes.string.isRequired,
   children: PropTypes.object.isRequired,
+  contentWidthSpan: PropTypes.number,
+};
+
+IndexLayout.defaultProps = {
+  contentWidthSpan: 12,
 };
 
 export default IndexLayout;
