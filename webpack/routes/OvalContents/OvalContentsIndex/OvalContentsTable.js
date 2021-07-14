@@ -6,11 +6,21 @@ import withLoading from '../../../components/withLoading';
 import withDeleteModal from '../../../components/withDeleteModal';
 import IndexTable from '../../../components/IndexTable';
 
+import { linkCell } from '../../../helpers/tableHelper';
+import { ovalContentsPath, modelPath } from '../../../helpers/pathsHelper';
+
 const OvalContentsTable = props => {
   const columns = [{ title: __('Name') }];
 
   const rows = props.ovalContents.map(ovalContent => ({
-    cells: [{ title: ovalContent.name }],
+    cells: [
+      {
+        title: linkCell(
+          modelPath(ovalContentsPath, ovalContent),
+          ovalContent.name
+        ),
+      },
+    ],
     ovalContent,
   }));
 
