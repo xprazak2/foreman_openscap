@@ -6,12 +6,16 @@ import { Button, Wizard, Form as PfForm } from '@patternfly/react-core';
 
 import EmptyState from '../../../components/EmptyState';
 import Loading from 'foremanReact/components/Loading';
+import IndexLayout from '../../../components/IndexLayout';
 
 import ovalContentsQuery from '../../../graphql/queries/ovalContents.gql';
 import ovalPoliciesQuery from '../../../graphql/queries/ovalPolicies.gql';
 import createOvalPolicy from '../../../graphql/mutations/createOvalPolicy.gql';
 
 import { ovalPoliciesPath } from '../../../helpers/pathsHelper';
+import { TextField, TextAreaField, SelectField } from '../../../helpers/formFieldsHelper';
+import { Field as FormikField } from 'formik';
+
 
 import { createValidationSchema, stepsFactory, onSubmit, initialValues } from './NewOvalPolicyWizardHelpers';
 
@@ -19,13 +23,6 @@ const NewOvalPolicyWizard = props => {
   const [callMutation] = useMutation(createOvalPolicy);
 
   const [assignedHgs, setAssignedHgs] = useState([]);
-  const [stepReached, setStepReached] = useState(0);
-
-  const onNextStep = ({ id }) => {
-    if (stepReached < id) {
-      setStepReached(id);
-    }
-  }
 
   const onHgAssignChange = allHgs => (event, isSelected, rowId, rowAttrs) => {
     let newAssignedHgs;
@@ -39,47 +36,36 @@ const NewOvalPolicyWizard = props => {
   }
 
   // should we merge queries somehow to improve error handling?
-  const policiesData = useQuery(ovalPoliciesQuery);
+  // const policiesData = useQuery(ovalPoliciesQuery);
   const ovalContentsData = useQuery(ovalContentsQuery);
 
-  if (ovalContentsData.loading || policiesData.loading) {
+  if (ovalContentsData.loading) {
     return <Loading />
   }
 
-  const loadError = ovalContentsData.error || policiesData.error
+  const loadError = ovalContentsData.error
 
   if (loadError) {
     return <EmptyState error={loadError} title={'Error!'} body={loadError.message} />
   }
 
-  const ovalPolicies = policiesData.data.ovalPolicies.nodes;
   const ovalContents = ovalContentsData.data.ovalContents.nodes;
 
   return (
     <Formik
       onSubmit={onSubmit(props.history, props.showToast, callMutation, assignedHgs)}
       initialValues={initialValues}
-      validationSchema={createValidationSchema(ovalPolicies)}
+      validationSchema={createValidationSchema()}
     >
       {formProps => {
-
-        const steps = stepsFactory(
-          props,
-          { enableNext: formProps.isValid,
-            isSubmitting: formProps.isSubmitting,
-            onHgAssignChange,
-            assignedHgs,
-            ovalContents,
-            ovalPolicies,
-            stepReached })
-
+        console.log(formProps)
         return (
-          <Wizard
-            steps={steps}
-            onNext={onNextStep}
-            onClose={() => props.history.push(ovalPoliciesPath)}
-            onSave={formProps.handleSubmit}
-          />
+          <PfForm>
+            <FormikField name="name" component={TextField} label="Name" isRequired/>
+            <FormikField name="description" component={TextAreaField} label="Description" />
+            <FormikField name="cronLine" component={TextField} label="Schedule" isRequired />
+            <FormikField name="ovalContentId" component={SelectField} selectItems={ovalContents} label="OVAL Content" isRequired blankLabel={"Choose OVAL Content"}/>
+          </PfForm>
         )
       }}
     </Formik>

@@ -9,10 +9,10 @@ import HostgroupsStep from './steps/HostgroupsStep';
 const pluckNames = (models) => models
 
 export const createValidationSchema = (existingPolicies) => {
-  const existingNames = existingPolicies.map(model => model.name);
+  // const existingNames = existingPolicies.map(model => model.name);
 
   return Yup.object().shape({
-    name: Yup.string().required("can't be blank").test('is-unique', 'has already been taken', value => value && !existingNames.includes(value)),
+    // name: Yup.string().required("can't be blank").test('is-unique', 'has already been taken', value => value && !existingNames.includes(value)),
     ovalContentId: Yup.string().required("can't be blank"),
     cronLine: Yup.string().test('is-cron', 'is not a valid cronline', value => value && value.trim().split(' ').length === 5)
   });
