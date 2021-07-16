@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addToast } from 'foremanReact/redux/actions/toasts';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import {
@@ -9,23 +11,46 @@ import {
   TextVariants,
 } from '@patternfly/react-core';
 
+import ConfirmModal from './ConfirmModal';
+
 import './IndexLayout.scss';
 
-const IndexLayout = ({ pageTitle, children }) => (
-  <React.Fragment>
-    <Helmet>
-      <title>{pageTitle}</title>
-    </Helmet>
-    <Grid className="scap-page-grid">
-      <GridItem span={12}>
-        <TextContent>
-          <Text component={TextVariants.h1}>{pageTitle}</Text>
-        </TextContent>
-      </GridItem>
-      <GridItem span={12}>{children}</GridItem>
-    </Grid>
-  </React.Fragment>
-);
+const IndexLayout = ({ pageTitle, children, toolbarBtns }) => {
+  const dispatch = useDispatch();
+  const showToast = toast => dispatch(addToast(toast));
+
+  const [modalState, setModalState] = useState({
+    prepareMutation: () => [],
+    onConfirm: () => {},
+    onClose: () => updateModalState({ isOpen: false }),
+    title: '',
+    text: '',
+    isOpen: false,
+    record: {},
+  })
+
+  const updateModalState = (newAttrs) => setModalState({ ...modalState, ...newAttrs })
+
+  return (
+    <React.Fragment>
+      <Helmet>
+        <title>{pageTitle}</title>
+      </Helmet>
+      <Grid className="scap-page-grid">
+        <GridItem span={8}>
+          <TextContent>
+            <Text component={TextVariants.h1}>{pageTitle}</Text>
+          </TextContent>
+        </GridItem>
+          {toolbarBtns && React.cloneElement(toolbarBtns, { updateModalState, modalState, showToast })}
+        <GridItem span={4}>
+        </GridItem>
+        <GridItem span={12}>{children}</GridItem>
+      </Grid>
+      <ConfirmModal {...modalState} />
+    </React.Fragment>
+  );
+}
 
 IndexLayout.propTypes = {
   pageTitle: PropTypes.string.isRequired,

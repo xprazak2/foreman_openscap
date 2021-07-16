@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { translate as __ } from 'foremanReact/common/I18n';
+import { translate as __, documentLocale } from 'foremanReact/common/I18n';
 import {
   Button,
   Grid,
@@ -13,11 +13,16 @@ import {
   Tabs,
   Tab,
   TabTitleText,
+  Flex,
+  FlexItem,
+  Spinner
 } from '@patternfly/react-core';
 
 import withLoading from '../../../components/withLoading';
+import IndexLayout from '../../../components/IndexLayout';
 
 import CvesTab from './CvesTab';
+import ToolbarBtns from './ToolbarBtns';
 
 import { policySchedule, newJobFormPath } from './OvalPoliciesShowHelper';
 import { resolvePath } from '../../../helpers/pathsHelper';
@@ -32,40 +37,46 @@ const OvalPoliciesShow = props => {
     );
   };
 
+  const toolbarBtns = (
+    <ToolbarBtns id={match.params.id} policy={policy} />
+  );
+
+  const formatDate = date => (new Intl.DateTimeFormat(documentLocale(), { dateStyle: 'full', timeStyle: 'medium' }).format(date))
+
+  let contentUpdatedAt;
+  const ovalContent = policy.ovalContent;
+
+  if (ovalContent) {
+    contentUpdatedAt = (
+      <React.Fragment>
+        <Text component={TextVariants.h3}>{__('OVAL Content')}</Text>
+        <Text component={TextVariants.p}>{ovalContent.name}</Text>
+        <Text component={TextVariants.h3}>{__('Last OVAL Content sync')}</Text>
+        <Text component={TextVariants.p}>{ovalContent.changedAt ? formatDate(Date.parse(ovalContent.changedAt)) : __('Unknown')}</Text>
+      </React.Fragment>
+    )
+  }
+
   return (
-    <React.Fragment>
-      <Helmet>
-        <title>{`${policy.name} | OVAL Policy`}</title>
-      </Helmet>
-      <Grid className="scap-page-grid">
-        <GridItem span={10}>
-          <Text component={TextVariants.h1}>{policy.name}</Text>
-        </GridItem>
-        <GridItem span={2}>
-          <Link to={newJobFormPath(policy, match.params.id)}>
-            <Button variant="secondary">{__('Scan All Hostgroups')}</Button>
-          </Link>
-        </GridItem>
-        <GridItem span={12}>
-          <Tabs mountOnEnter activeKey={activeTab} onSelect={handleTabSelect}>
-            <Tab
-              eventKey="details"
-              title={<TabTitleText>Details</TabTitleText>}
-            >
-              <TextContent className="pf-u-pt-md">
-                <Text component={TextVariants.h3}>Period</Text>
-                <Text component={TextVariants.p}>{policySchedule(policy)}</Text>
-                <Text component={TextVariants.h3}>Description</Text>
-                <Text component={TextVariants.p}>{policy.description}</Text>
-              </TextContent>
-            </Tab>
-            <Tab eventKey="cves" title={<TabTitleText>CVEs</TabTitleText>}>
-              <CvesTab {...props} />
-            </Tab>
-          </Tabs>
-        </GridItem>
-      </Grid>
-    </React.Fragment>
+    <IndexLayout pageTitle={`${policy.name} | ${__('OVAL Policy')}`} toolbarBtns={toolbarBtns}>
+      <Tabs mountOnEnter activeKey={activeTab} onSelect={handleTabSelect}>
+        <Tab
+          eventKey="details"
+          title={<TabTitleText>Details</TabTitleText>}
+        >
+          <TextContent className="pf-u-pt-md">
+            <Text component={TextVariants.h3}>{__('Period')}</Text>
+            <Text component={TextVariants.p}>{policySchedule(policy)}</Text>
+            <Text component={TextVariants.h3}>{__('Description')}</Text>
+            <Text component={TextVariants.p}>{policy.description || __('None')}</Text>
+            { contentUpdatedAt }
+          </TextContent>
+        </Tab>
+        <Tab eventKey="cves" title={<TabTitleText>{__('CVEs')}</TabTitleText>}>
+          <CvesTab {...props} />
+        </Tab>
+      </Tabs>
+    </IndexLayout>
   );
 };
 

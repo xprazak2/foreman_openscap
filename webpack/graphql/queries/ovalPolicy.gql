@@ -7,6 +7,13 @@ query($id: String!) {
     weekday
     dayOfMonth
     description
+    ovalContent {
+      id
+      name
+      url
+      originalFilename
+      changedAt
+    }
     hostgroups {
       nodes {
         id

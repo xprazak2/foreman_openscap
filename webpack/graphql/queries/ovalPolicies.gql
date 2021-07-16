@@ -5,6 +5,7 @@ query($first: Int, $last: Int) {
       id
       name
       ovalContent {
+        id
         name
       }
     }
