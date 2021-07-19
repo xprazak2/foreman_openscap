@@ -1,5 +1,5 @@
-query {
-  hostgroups {
+query($search: String) {
+  hostgroups(search: $search) {
     totalCount
     nodes {
       id

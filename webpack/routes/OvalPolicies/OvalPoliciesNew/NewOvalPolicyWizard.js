@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Formik } from 'formik';
 import { useQuery, useMutation } from '@apollo/client';
 
-import { Button, Wizard, Form as PfForm } from '@patternfly/react-core';
+import { Button, Wizard, Form as PfForm, ActionGroup } from '@patternfly/react-core';
 
 import EmptyState from '../../../components/EmptyState';
 import Loading from 'foremanReact/components/Loading';
@@ -15,7 +15,7 @@ import createOvalPolicy from '../../../graphql/mutations/createOvalPolicy.gql';
 import { ovalPoliciesPath } from '../../../helpers/pathsHelper';
 import { TextField, TextAreaField, SelectField } from '../../../helpers/formFieldsHelper';
 import { Field as FormikField } from 'formik';
-
+import HostgroupSelect from './HostgroupSelect';
 
 import { createValidationSchema, stepsFactory, onSubmit, initialValues } from './NewOvalPolicyWizardHelpers';
 
@@ -65,6 +65,19 @@ const NewOvalPolicyWizard = props => {
             <FormikField name="description" component={TextAreaField} label="Description" />
             <FormikField name="cronLine" component={TextField} label="Schedule" isRequired />
             <FormikField name="ovalContentId" component={SelectField} selectItems={ovalContents} label="OVAL Content" isRequired blankLabel={"Choose OVAL Content"}/>
+            <HostgroupSelect selected={assignedHgs} setSelected={setAssignedHgs} />
+            <ActionGroup>
+              <Button
+                variant="primary"
+                onClick={formProps.handleSubmit}
+                isDisabled={!formProps.isValid || formProps.isSubmitting}
+              >
+                {__('Submit')}
+              </Button>
+              <Button variant="link" isDisabled={formProps.isSubmitting}>
+                {__('Cancel')}
+              </Button>
+            </ActionGroup>
           </PfForm>
         )
       }}
